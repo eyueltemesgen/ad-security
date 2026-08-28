@@ -90,6 +90,13 @@ def _current_admin():
     return None
 
 
+def _safe_next(target):
+    """Allow only internal relative redirects to avoid open-redirect."""
+    if target and target.startswith("/") and not target.startswith("//"):
+        return target
+    return None
+
+
 @admin_bp.route("/login", methods=["GET", "POST"])
 def login():
     if _current_admin():
@@ -103,9 +110,9 @@ def login():
             admin.last_login_at = utcnow()
             audit(admin, "Admin login", "auth", admin.id, "Admin logged in", request.remote_addr)
             db.session.commit()
-            return redirect(url_for("admin.dashboard"))
+            return redirect(_safe_next(request.form.get("next")) or url_for("admin.dashboard"))
         flash("Invalid admin credentials.", "error")
-    return render_template("admin/login.html")
+    return render_template("admin/login.html", next=_safe_next(request.args.get("next")) or "")
 
 
 @admin_bp.route("/logout")

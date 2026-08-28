@@ -54,6 +54,7 @@
           {% else %}
             <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-sm">Login</a>
           {% endif %}
+          <a href="{{ url_for('admin.login', next=request.path) }}" class="btn btn-accent btn-sm" title="Staff login">Admin</a>
         </div>
       </div>
     </div>

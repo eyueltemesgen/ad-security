@@ -19,6 +19,10 @@
       <a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
       <a href="{{ url_for('auth.register') }}">Create account</a>
     </div>
+    <hr style="margin:18px 0;border-color:rgba(0,0,0,.08)">
+    <p class="text-center text-muted" style="margin:0;font-size:.9rem">
+      Are you an administrator? <a href="{{ url_for('admin.login') }}"><strong>Admin Login</strong></a>
+    </p>
   </div>
 </div>
 {% endblock %}

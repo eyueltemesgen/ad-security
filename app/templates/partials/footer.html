@@ -35,7 +35,8 @@
       </div>
     </div>
     <div class="footer-bottom">
-      © {{ current_year }} {{ site.name }}. All rights reserved.
+      <span>© {{ current_year }} {{ site.name }}. All rights reserved.</span>
+      <a href="{{ url_for('admin.login') }}" class="footer-admin-link">Admin Login</a>
     </div>
   </div>
 </footer>
