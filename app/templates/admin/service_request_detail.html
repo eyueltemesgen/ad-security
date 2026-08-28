@@ -1,0 +1,70 @@
+{% extends "admin/base.html" %}
+{% block title %}Service Request {{ req.request_number }}{% endblock %}
+{% block heading %}Service Request {{ req.request_number }}{% endblock %}
+{% block content %}
+<div class="stat-row">
+  <div class="admin-stat"><div class="admin-stat-value" style="font-size:1.1rem">{{ req.service_name }}</div><div class="admin-stat-label">Service</div></div>
+  <div class="admin-stat"><div class="admin-stat-value" style="font-size:1.1rem">{{ req.full_name }}</div><div class="admin-stat-label">Customer</div></div>
+  <div class="admin-stat"><div class="admin-stat-value" style="font-size:1.1rem">{{ req.location }}</div><div class="admin-stat-label">Location</div></div>
+  <div class="admin-stat"><div class="admin-stat-value" style="font-size:1.1rem">{{ req.submitted_at.strftime('%b %d, %Y') }}</div><div class="admin-stat-label">Submitted</div></div>
+</div>
+
+<div class="panel">
+  <div class="flex-between"><h3>Update Status</h3>
+    <span class="status-badge status-{{ req.status }}">{{ req.status_label }}</span></div>
+  <form method="post" action="{{ url_for('admin.service_request_status', request_id=req.id) }}">
+    <div class="form-row">
+      <div class="form-group"><label>Status</label>
+        <select name="status">{% for s in statuses %}<option value="{{ s }}" {% if s==req.status %}selected{% endif %}>{{ s.replace('_',' ').title() }}</option>{% endfor %}</select></div>
+      <div class="form-group"><label>Assigned Technician</label><input type="text" name="assigned_technician" value="{{ req.assigned_technician or '' }}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Scheduled Date/Time</label><input type="datetime-local" name="scheduled_date" value="{{ req.scheduled_at.strftime('%Y-%m-%dT%H:%M') if req.scheduled_at else '' }}"></div>
+      <div class="form-group"><label>Status Note</label><input type="text" name="note"></div>
+    </div>
+    <button class="btn btn-secondary btn-sm">Update</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h3>Request Details</h3>
+  <p class="text-muted" style="margin:0">
+    <strong>Contact:</strong> {{ req.full_name }} · {{ req.phone }} · {{ req.email }}<br>
+    {% if req.property_type %}<strong>Property:</strong> {{ req.property_type }}<br>{% endif %}
+    {% if req.preferred_date %}<strong>Preferred:</strong> {{ req.preferred_date }}{% if req.preferred_time %} at {{ req.preferred_time }}{% endif %}<br>{% endif %}
+    {% if req.device_count %}<strong>Devices:</strong> {{ req.device_count }}<br>{% endif %}
+    {% if req.current_system %}<strong>Current System:</strong> {{ req.current_system }}<br>{% endif %}
+    {% if req.description %}<strong>Description:</strong> {{ req.description }}<br>{% endif %}
+    {% if req.notes %}<strong>Notes:</strong> {{ req.notes }}{% endif %}
+  </p>
+  {% if req.files %}
+  <h4 style="margin-top:14px">Attachments</h4>
+  <div class="flex gap-2" style="flex-wrap:wrap">
+    {% for f in req.files %}
+    <div style="background:#f6f8fa;border:1px solid var(--border);border-radius:8px;padding:8px">
+      {% if f.is_image %}<img src="/static/img/uploads/service/{{ f.filename }}" alt="" style="max-height:120px;border-radius:5px;display:block;margin-bottom:4px">{% endif %}
+      <span style="font-size:.78rem">{{ f.original_name }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<div class="panel">
+  <h3>Internal Notes</h3>
+  <form method="post" action="{{ url_for('admin.service_request_notes', request_id=req.id) }}">
+    <textarea name="internal_notes" style="min-height:90px">{{ req.internal_notes or '' }}</textarea>
+    <button class="btn btn-secondary btn-sm" style="margin-top:8px">Save Notes</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h3>Status History</h3>
+  <ul class="notif-list">
+    {% for h in req.status_history %}
+    <li><span class="status-badge status-{{ h.to_status }}">{{ h.to_status.replace('_',' ').title() }}</span>
+      <span class="text-muted" style="font-size:.8rem">{{ h.created_at.strftime('%b %d %H:%M') }} by {{ h.changed_by }}{% if h.note %} — {{ h.note }}{% endif %}</span></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

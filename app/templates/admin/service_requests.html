@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+{% block title %}Service Requests{% endblock %}
+{% block heading %}Service Requests{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <form method="get" class="flex gap-2" style="flex-wrap:wrap">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search #, customer, location...">
+    <select name="status">
+      <option value="">All Statuses</option>
+      {% for s in statuses %}<option value="{{ s }}" {% if status==s %}selected{% endif %}>{{ s.replace('_',' ').title() }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-secondary btn-sm">Filter</button>
+  </form>
+</div>
+<div class="panel">
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Request</th><th>Service</th><th>Customer</th><th>Location</th><th>Date</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for r in requests %}
+      <tr>
+        <td data-label="Request">{{ r.request_number }}</td>
+        <td data-label="Service">{{ r.service_name }}</td>
+        <td data-label="Customer">{{ r.full_name }}</td>
+        <td data-label="Location">{{ r.location }}</td>
+        <td data-label="Date">{{ r.submitted_at.strftime('%b %d, %Y') }}</td>
+        <td data-label="Status"><span class="status-badge status-{{ r.status }}">{{ r.status_label }}</span></td>
+        <td data-label=""><a href="{{ url_for('admin.service_request_detail', request_id=r.id) }}">View →</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  {% if not requests %}<div class="empty"><p>No service requests found.</p></div>{% endif %}
+</div>
+{% if pagination.pages > 1 %}
+<div class="pagination">
+  {% if pagination.has_prev %}<a href="{{ url_for('admin.service_requests', page=pagination.prev_num, q=q, status=status) }}">‹ Prev</a>{% endif %}
+  {% for p in range(1, pagination.pages+1) %}{% if p==pagination.page %}<span class="current">{{ p }}</span>{% else %}<a href="{{ url_for('admin.service_requests', page=p, q=q, status=status) }}">{{ p }}</a>{% endif %}{% endfor %}
+  {% if pagination.has_next %}<a href="{{ url_for('admin.service_requests', page=pagination.next_num, q=q, status=status) }}">Next ›</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

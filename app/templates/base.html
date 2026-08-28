@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{ site.seo_description or site.description }}">
+  <title>{% block title %}{{ site.seo_title }}{% endblock %}</title>
+  <link rel="icon" href="{{ site.favicon }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    :root {
+      --primary: {{ primary_color }};
+      --primary-2: {{ primary_color }};
+      --secondary: {{ secondary_color }};
+      --accent: {{ accent_color }};
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% if active_announcement %}
+  <div class="announcement">
+    <strong>{{ active_announcement.title }}:</strong>
+    {{ active_announcement.message }}
+    {% if active_announcement.cta_label %}
+      <a href="{{ active_announcement.cta_url }}">{{ active_announcement.cta_label }} →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-bar">
+        <button class="menu-toggle" aria-label="Menu">☰</button>
+        <a href="{{ url_for('main.home') }}" class="brand">
+          <img class="brand-logo" src="{{ site.logo }}" alt="{{ site.name }}" onerror="this.style.visibility='hidden'">
+          <span class="brand-name">{{ site.name.split()|first }}
+            <small>{{ 'Security Camera Solution' if 'AD' in site.name else site.name }}</small>
+          </span>
+        </a>
+        <nav class="site-nav">
+          {% for item in nav_items %}
+            <a href="{{ item.url }}" {% if request.path == item.url %}class="active"{% endif %}>{{ item.label }}</a>
+          {% endfor %}
+        </nav>
+        <div class="header-actions">
+          <form action="{{ url_for('main.products') }}" method="get" style="position:relative">
+            <input type="text" name="q" placeholder="Search products..." style="width:180px;background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.25);color:#fff" aria-label="Search">
+          </form>
+          {% if current_user.is_authenticated and current_user.role == 'customer' %}
+            <a href="{{ url_for('customer.cart') }}" class="icon-btn" title="Cart">🛒<span class="badge-count" data-cart-count>{{ cart_count or 0 }}</span></a>
+            <a href="{{ url_for('customer.notifications') }}" class="icon-btn" title="Notifications">🔔</a>
+            <a href="{{ url_for('customer.dashboard') }}" class="icon-btn" title="Account">👤</a>
+          {% else %}
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-sm">Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container" style="padding-top:18px">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "partials/footer.html" %}
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

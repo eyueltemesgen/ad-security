@@ -1,0 +1,79 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+{% block content %}
+<div class="stat-row">
+  <div class="admin-stat"><div class="admin-stat-value">{{ stats.customers }}</div><div class="admin-stat-label">Customers</div></div>
+  <div class="admin-stat"><div class="admin-stat-value" style="color:var(--secondary)">+{{ stats.new_customers }}</div><div class="admin-stat-label">New (7d)</div></div>
+  <div class="admin-stat"><div class="admin-stat-value">{{ stats.orders }}</div><div class="admin-stat-label">Total Orders</div></div>
+  <div class="admin-stat"><div class="admin-stat-value" style="color:var(--warning)">{{ stats.pending_orders }}</div><div class="admin-stat-label">Pending Orders</div></div>
+  <div class="admin-stat"><div class="admin-stat-value" style="color:var(--success)">{{ stats.completed_orders }}</div><div class="admin-stat-label">Completed</div></div>
+  <div class="admin-stat"><div class="admin-stat-value">{{ stats.requests }}</div><div class="admin-stat-label">Service Requests</div></div>
+  <div class="admin-stat"><div class="admin-stat-value">{{ stats.products }}</div><div class="admin-stat-label">Products</div></div>
+  <div class="admin-stat"><div class="admin-stat-value" style="color:var(--danger)">{{ stats.low_stock }}</div><div class="admin-stat-label">Low Stock</div></div>
+</div>
+
+<div class="grid grid-2" style="margin-bottom:20px">
+  <div class="panel">
+    <h3>Orders (last 8 days)</h3>
+    <div class="bars">
+      {% set max = order_days|map(attribute='count')|max if order_days else 1 %}
+      {% for d in order_days %}
+      <div class="bar" style="height:{{ ((d.count/max)*160 + 4) if max else 4 }}%" data-tip="{{ d.count }}">
+        <div style="position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:.72rem">{{ d.count }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="flex" style="justify-content:space-between;margin-top:26px">
+      {% for d in order_days %}<span style="font-size:.68rem;color:var(--muted)">{{ d.date }}</span>{% endfor %}
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Sales Revenue (last 8 days)</h3>
+    <div class="bars">
+      {% set max = sales_days|map(attribute='total')|max if sales_days else 1 %}
+      {% for d in sales_days %}
+      <div class="bar" style="height:{{ ((d.total or 0)/max*100 + 4) if max else 4 }}%;background:var(--accent)" title="${{ '%.2f'|format(d.total) }}">
+        <span style="position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:.66rem">${{ '%d'|format(d.total) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-2" style="margin-bottom:20px">
+  <div class="panel">
+    <div class="flex-between"><h3>Recent Orders</h3><a href="{{ url_for('admin.orders') }}">View all</a></div>
+    {% if recent_orders %}
+    <div class="table-wrap"><table class="data">
+      <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for o in recent_orders %}
+        <tr>
+          <td data-label="Order"><a href="{{ url_for('admin.order_detail', order_id=o.id) }}">{{ o.order_number }}</a></td>
+          <td data-label="Customer">{{ o.full_name }}</td>
+          <td data-label="Total">${{ '%.2f'|format(o.total) }}</td>
+          <td data-label="Status"><span class="status-badge status-{{ o.status }}">{{ o.status_label }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}<p class="text-muted">No orders yet.</p>{% endif %}
+  </div>
+  <div class="panel">
+    <div class="flex-between"><h3>Recent Service Requests</h3><a href="{{ url_for('admin.service_requests') }}">View all</a></div>
+    {% if recent_requests %}
+    <div class="table-wrap"><table class="data">
+      <thead><tr><th>Request</th><th>Service</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for r in recent_requests %}
+        <tr><td data-label="Request"><a href="{{ url_for('admin.service_request_detail', request_id=r.id) }}">{{ r.request_number }}</a></td>
+          <td data-label="Service">{{ r.service_name }}</td>
+          <td data-label="Status"><span class="status-badge status-{{ r.status }}">{{ r.status_label }}</span></td></tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}<p class="text-muted">No service requests yet.</p>{% endif %}
+  </div>
+</div>
+{% endblock %}

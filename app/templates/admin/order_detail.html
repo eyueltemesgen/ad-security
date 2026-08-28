@@ -1,0 +1,70 @@
+{% extends "admin/base.html" %}
+{% block title %}Order {{ order.order_number }}{% endblock %}
+{% block heading %}Order {{ order.order_number }}{% endblock %}
+{% block content %}
+<div class="stat-row">
+  <div class="admin-stat"><div class="admin-stat-value" style="font-size:1.1rem">{{ order.full_name }}</div><div class="admin-stat-label">Customer</div></div>
+  <div class="admin-stat"><div class="admin-stat-value" style="font-size:1.1rem">{{ order.placed_at.strftime('%b %d, %Y') }}</div><div class="admin-stat-label">Placed</div></div>
+  <div class="admin-stat"><div class="admin-stat-value" style="font-size:1.1rem">${{ '%.2f'|format(order.total) }}</div><div class="admin-stat-label">Total</div></div>
+  <div class="admin-stat"><div class="admin-stat-value" style="font-size:1rem">{{ order.item_count }}</div><div class="admin-stat-label">Items</div></div>
+</div>
+
+<div class="panel">
+  <div class="flex-between"><h3>Update Status</h3>
+    <span class="status-badge status-{{ order.status }}">{{ order.status_label }}</span></div>
+  <form method="post" action="{{ url_for('admin.order_status', order_id=order.id) }}" class="flex gap-2" style="flex-wrap:wrap">
+    <select name="status" style="max-width:220px">
+      {% for s in statuses %}<option value="{{ s }}" {% if s==order.status %}selected{% endif %}>{{ s.replace('_',' ').title() }}</option>{% endfor %}
+    </select>
+    <input type="text" name="note" placeholder="Status note (optional)" style="flex:1;min-width:180px">
+    <button class="btn btn-secondary btn-sm">Update Status</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h3>Order Items</h3>
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Product</th><th>SKU</th><th>Price</th><th>Qty</th><th>Total</th></tr></thead>
+    <tbody>
+      {% for i in order.items %}
+      <tr><td data-label="Product">{{ i.product_name }}</td><td data-label="SKU">{{ i.product_sku }}</td>
+        <td data-label="Price">${{ '%.2f'|format(i.unit_price) }}</td><td data-label="Qty">{{ i.quantity }}</td>
+        <td data-label="Total">${{ '%.2f'|format(i.line_total) }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  <div style="margin-top:12px">
+    <div class="flex-between"><span>Subtotal</span><span>${{ '%.2f'|format(order.subtotal) }}</span></div>
+    <div class="flex-between"><span>Delivery</span><span>${{ '%.2f'|format(order.delivery_fee) }}</span></div>
+    <hr class="divider">
+    <div class="flex-between" style="font-size:1.15rem"><strong>Total</strong><strong>${{ '%.2f'|format(order.total) }}</strong></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>Delivery & Payment</h3>
+  <p class="text-muted" style="margin:0">{{ order.full_name }}<br>{{ order.phone }} · {{ order.email }}<br>
+    {{ order.address_line }}, {{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}{% if order.postal_code %} {{ order.postal_code }}{% endif %}<br>
+    {% if order.delivery_notes %}Notes: {{ order.delivery_notes }}<br>{% endif %}
+    Payment: {{ order.payment_method }} ({{ order.payment_status }})
+  </p>
+</div>
+
+<div class="panel">
+  <h3>Internal Notes</h3>
+  <form method="post" action="{{ url_for('admin.order_notes', order_id=order.id) }}">
+    <textarea name="internal_notes" style="min-height:90px">{{ order.internal_notes or '' }}</textarea>
+    <button class="btn btn-secondary btn-sm" style="margin-top:8px">Save Notes</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h3>Status History</h3>
+  <ul class="notif-list">
+    {% for h in order.status_history %}
+    <li><span class="status-badge status-{{ h.to_status }}">{{ h.to_status.replace('_',' ').title() }}</span>
+      <span class="text-muted" style="font-size:.8rem">{{ h.created_at.strftime('%b %d %H:%M') }} by {{ h.changed_by }}{% if h.note %} — {{ h.note }}{% endif %}</span></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

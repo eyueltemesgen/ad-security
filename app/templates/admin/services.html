@@ -1,0 +1,39 @@
+{% extends "admin/base.html" %}
+{% block title %}Services{% endblock %}
+{% block heading %}Services{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div class="spacer"></div>
+  <a href="{{ url_for('admin.service_add') }}" class="btn btn-accent btn-sm">+ Add Service</a>
+</div>
+{% for cat in scats %}
+<div class="panel">
+  <h3>{{ cat.name }}</h3>
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Service</th><th>Icon</th><th>Features</th><th>Status</th><th>Order</th><th></th></tr></thead>
+    <tbody>
+      {% for s in cat.services %}
+      <tr>
+        <td data-label="Service"><div class="flex" style="gap:8px">
+          {% if s.image %}<img src="{{ s.image }}" alt="" style="width:44px;height:38px;object-fit:cover;border-radius:4px">{% endif %}
+          <div>{{ s.name }}{% if s.price_from %}<div class="text-muted" style="font-size:.78rem">from ${{ '%.2f'|format(s.price_from) }}</div>{% endif %}</div></div></td>
+        <td data-label="Icon">{{ s.icon }}</td>
+        <td data-label="Features">{{ s.features.split('\n')|length if s.features else 0 }} items</td>
+        <td data-label="Status">{% if s.is_published %}<span class="status-badge status-completed">Live</span>{% if s.is_featured %}<span class="status-badge status-processing">Featured</span>{% endif %}{% else %}<span class="status-badge status-cancelled">Draft</span>{% endif %}</td>
+        <td data-label="Order">{{ s.sort_order }}</td>
+        <td data-label=""><a href="{{ url_for('admin.service_edit', service_id=s.id) }}">Edit →</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+</div>
+{% endfor %}
+
+<div class="panel" style="max-width:720px">
+  <div class="flex-between"><h3>Add Service Category</h3></div>
+  <form method="post" action="{{ url_for('admin.service_category_add') }}" class="flex gap-2">
+    <input type="text" name="name" placeholder="Category name" required>
+    <button class="btn btn-secondary btn-sm">Add</button>
+  </form>
+</div>
+{% endblock %}

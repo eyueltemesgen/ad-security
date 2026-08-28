@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ service.name }} - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="crumbs"><div class="container"><a href="{{ url_for('main.home') }}">Home</a> › <a href="{{ url_for('main.services') }}">Services</a> › <span>{{ service.name }}</span></div></div>
+<div class="container" style="padding-top:24px">
+  <div class="detail-layout">
+    <div>
+      {% if service.image %}<img class="img-cover" src="{{ service.image }}" alt="{{ service.name }}">{% endif %}
+      <div class="panel" style="margin-top:20px">
+        <div class="service-icon">{{ service.icon[:1]|upper }}</div>
+        <h1 style="font-size:1.6rem">{{ service.name }}</h1>
+        <p>{{ service.description or service.short_description }}</p>
+        {% if service.price_from %}<div class="price">From ${{ '%.2f'|format(service.price_from) }}</div>{% endif %}
+        {% if service.features %}
+        <h4 style="margin-top:16px">What's included</h4>
+        <ul class="feature-list">
+          {% for f in service.features.split('\n') %}<li>{{ f }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+    <div>
+      <div class="buy-box" style="position:sticky;top:90px">
+        <h3>Ready to get started?</h3>
+        <p class="text-muted">Request this service and our team will contact you to discuss your needs and schedule a site assessment.</p>
+        <a href="{{ url_for('customer.request_service') }}" class="btn btn-accent btn-lg" style="width:100%">Request {{ service.name }}</a>
+        <hr class="divider">
+        <p class="text-muted" style="font-size:0.88rem">Prefer to talk? Call {{ site.phone }} or email <a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+      </div>
+    </div>
+  </div>
+
+  {% if related %}
+  <div class="section-head" style="margin-top:40px"><h2>Other Services</h2></div>
+  <div class="grid grid-4">
+    {% for s in related if s.is_published %}
+    <div class="card"><div class="card-body">
+      <div class="service-icon">{{ s.icon[:1]|upper }}</div>
+      <h4 class="card-title"><a href="{{ url_for('main.service_detail', slug=s.slug) }}">{{ s.name }}</a></h4>
+      <p class="card-text">{{ s.short_description }}</p>
+    </div></div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

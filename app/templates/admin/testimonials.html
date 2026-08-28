@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+{% block title %}Testimonials{% endblock %}
+{% block heading %}Testimonials{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div class="spacer"></div>
+  <a href="{{ url_for('admin.testimonial_add') }}" class="btn btn-accent btn-sm">+ Add Testimonial</a>
+</div>
+<div class="grid grid-2">
+  {% for t in items %}
+  <div class="card"><div class="card-body">
+    <div class="flex-between">
+      <div class="flex" style="gap:10px">
+        {% if t.profile_image %}<img src="{{ t.profile_image }}" class="avatar avatar-sm" alt="">{% endif %}
+        <div><strong>{{ t.customer_name }}</strong>{% if t.company %}<div class="text-muted">{{ t.company }}</div>{% endif %}</div>
+      </div>
+      <div class="stars">{% for _ in range(t.rating) %}★{% endfor %}</div>
+    </div>
+    <p class="quote" style="margin-top:10px">“{{ t.content }}”</p>
+    <div class="flex-between">
+      {% if t.is_published %}<span class="status-badge status-completed">Published</span>{% else %}<span class="status-badge status-cancelled">Hidden</span>{% endif %}
+      <div class="flex gap-2">
+        <a href="{{ url_for('admin.testimonial_edit', item_id=t.id) }}" class="btn btn-sm btn-outline">Edit</a>
+        <form method="post" action="{{ url_for('admin.testimonial_delete', item_id=t.id) }}" data-confirm="Delete this testimonial?"><button class="btn btn-sm btn-outline" style="color:var(--danger);border-color:var(--danger)">Delete</button></form>
+      </div>
+    </div>
+  </div></div>
+  {% endfor %}
+</div>
+{% endblock %}

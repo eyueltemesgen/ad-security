@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% block title %}Message from {{ msg.name }}{% endblock %}
+{% block heading %}Contact Message{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="flex-between">
+    <h3 style="margin:0">{{ msg.subject }}</h3>
+    <span class="status-badge status-{{ 'completed' if msg.is_replied else ('processing' if msg.is_read else 'pending') }}">
+      {{ 'Replied' if msg.is_replied else ('Read' if msg.is_read else 'New') }}
+    </span>
+  </div>
+  <p class="text-muted" style="margin:6px 0 16px">From {{ msg.name }} · {{ msg.email }}{% if msg.phone %} · {{ msg.phone }}{% endif %} · {{ msg.created_at.strftime('%b %d, %Y %H:%M') }}</p>
+  <div class="quote" style="border:1px solid var(--border);border-radius:8px;padding:16px">{{ msg.message }}</div>
+  <div class="flex gap-2" style="margin-top:16px;flex-wrap:wrap">
+    <form method="post"><button class="btn btn-sm btn-outline" name="mark_read" value="1" type="submit">{% if msg.is_read %}Mark Unread{% else %}Mark Read{% endif %}</button></form>
+    <form method="post"><button class="btn btn-sm btn-secondary" name="mark_replied" value="1" type="submit">Mark as Replied</button></form>
+    <a class="btn btn-sm btn-outline" href="mailto:{{ msg.email }}?subject=Re: {{ msg.subject }}">Reply via Email</a>
+  </div>
+</div>
+{% endblock %}

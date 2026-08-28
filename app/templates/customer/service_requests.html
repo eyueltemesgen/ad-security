@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Service Requests - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:26px">
+  <div class="dash-layout">
+    <aside class="dash-side">
+      <div style="padding:16px;border-bottom:1px solid var(--border)"><strong>{{ current_user.full_name }}</strong></div>
+      <a href="{{ url_for('customer.dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('customer.orders') }}">My Orders</a>
+      <a href="{{ url_for('customer.service_requests') }}" class="active">Service Requests</a>
+      <a href="{{ url_for('customer.request_service') }}">Request a Service</a>
+      <a href="{{ url_for('customer.profile') }}">Profile</a>
+      <a href="{{ url_for('customer.notifications') }}">Notifications</a>
+      <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </aside>
+    <div class="dash-main">
+      <div class="flex-between"><h2 style="margin-bottom:18px">Service Requests</h2>
+        <a href="{{ url_for('customer.request_service') }}" class="btn btn-secondary btn-sm">+ New Request</a></div>
+      <div class="panel">
+        {% if requests %}
+        <div class="table-wrap"><table class="data">
+          <thead><tr><th>Request</th><th>Service</th><th>Location</th><th>Date</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            {% for r in requests %}
+            <tr>
+              <td data-label="Request">{{ r.request_number }}</td>
+              <td data-label="Service">{{ r.service_name }}</td>
+              <td data-label="Location">{{ r.location }}</td>
+              <td data-label="Date">{{ r.submitted_at.strftime('%b %d, %Y') }}</td>
+              <td data-label="Status"><span class="status-badge status-{{ r.status }}">{{ r.status_label }}</span></td>
+              <td data-label=""><a href="{{ url_for('customer.request_detail', request_id=r.id) }}">View →</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table></div>
+        {% else %}<div class="empty"><div class="big">🔧</div><p>No service requests yet. <a href="{{ url_for('customer.request_service') }}">Request a service</a></p></div>{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

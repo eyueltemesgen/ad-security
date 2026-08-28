@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="crumbs"><div class="container"><a href="{{ url_for('main.home') }}">Home</a> › <a href="{{ url_for('main.products') }}">Products</a> › <span>{{ product.name }}</span></div></div>
+
+<div class="container" style="padding-top:24px">
+  <div class="detail-layout">
+    <div class="detail-gallery">
+      {% set imgs = product.images %}
+      <img class="main-img" src="{{ imgs[0].image_url if imgs else product.main_image }}" id="main-img" alt="{{ product.name }}">
+      {% if imgs|length > 1 %}
+      <div class="thumb-row">
+        {% for im in imgs %}
+        <img src="{{ im.image_url }}" alt="" onclick="document.getElementById('main-img').src=this.src" class="{% if loop.first %}active{% endif %}">
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="buy-box">
+      <div class="category-tag">{{ product.category.name if product.category else '' }}</div>
+      <h1 style="font-size:1.5rem">{{ product.name }}</h1>
+      <div class="text-muted" style="margin-bottom:12px">SKU: {{ product.sku }} {% if product.brand %}· Brand: {{ product.brand.name }}{% endif %}</div>
+      <div class="flex-between" style="margin-bottom:14px">
+        <div class="price" style="font-size:1.6rem">
+          {% if product.has_sale %}<span class="old">${{ '%.2f'|format(product.price) }}</span>{% endif %}
+          ${{ '%.2f'|format(product.display_price) }}
+          {% if product.has_sale %}<span class="sale-tag">SALE</span>{% endif %}
+        </div>
+        <span class="stock-badge stock-{{ product.stock_status }}">
+          {% if product.stock_status == 'in' %}In Stock{% elif product.stock_status == 'low' %}Low Stock{% else %}Out of Stock{% endif %}
+        </span>
+      </div>
+      <p style="color:var(--muted)">{{ product.short_description }}</p>
+
+      <form method="post" action="{{ url_for('customer.add_to_cart') }}">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <div class="flex" style="gap:12px;margin-bottom:16px">
+          <div class="qty-input">
+            <button type="button" class="qty-minus">−</button>
+            <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
+            <button type="button" class="qty-plus">+</button>
+          </div>
+          <button type="submit" class="btn btn-secondary" {% if not product.in_stock %}disabled{% endif %}>Add to Cart</button>
+        </div>
+        <button type="submit" class="btn btn-accent btn-lg" style="width:100%" {% if not product.in_stock %}disabled{% endif %} formaction="{{ url_for('customer.checkout') }}" onclick="this.form.action='{{ url_for('customer.checkout') }}'">Order Now</button>
+      </form>
+      {% if product.warranty %}<div style="margin-top:14px" class="text-muted">🛡 Warranty: {{ product.warranty }}</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="margin-top:30px">
+    <div class="panel">
+      <h3>Description</h3>
+      <p>{{ product.description or product.short_description }}</p>
+      {% if product.features %}
+      <h4 style="margin-top:16px">Features</h4>
+      <ul class="feature-list">
+        {% for f in product.features.split('\n') %}<li>{{ f }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    {% if product.specifications %}
+    <div class="panel">
+      <h3>Specifications</h3>
+      <table class="data spec-table">
+        {% for line in product.specifications.split('\n') %}
+          {% if ':' in line %}
+          {% set parts = line.split(':', 1) %}
+          <tr><td>{{ parts[0].strip() }}</td><td>{{ parts[1].strip() }}</td></tr>
+          {% endif %}
+        {% endfor %}
+      </table>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if related %}
+  <div class="section-head" style="margin-top:40px"><h2>Related Products</h2></div>
+  <div class="grid grid-4">
+    {% for p in related %}
+    <div class="card">
+      <a href="{{ url_for('main.product_detail', slug=p.slug) }}"><img class="card-img" src="{{ p.main_image }}" alt="{{ p.name }}" loading="lazy"></a>
+      <div class="card-body">
+        <h4 class="card-title"><a href="{{ url_for('main.product_detail', slug=p.slug) }}">{{ p.name }}</a></h4>
+        <span class="price">${{ '%.2f'|format(p.display_price) }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

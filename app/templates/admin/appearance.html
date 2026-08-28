@@ -1,0 +1,16 @@
+{% extends "admin/base.html" %}
+{% block title %}Appearance{% endblock %}
+{% block heading %}Appearance & Theme{% endblock %}
+{% block content %}
+<form method="post">
+  <div class="grid grid-2">
+    <div class="panel">
+      <h3>Theme Colors</h3>
+      <div class="form-group"><label>Primary Color</label><input type="color" name="primary_color" value="{{ s.get('primary_color','#0b1f3a') }}" style="height:42px"></div>
+      <div class="form-group"><label>Secondary Color</label><input type="color" name="secondary_color" value="{{ s.get('secondary_color','#0e7a5a') }}" style="height:42px"></div>
+      <div class="form-group"><label>Accent Color</label><input type="color" name="accent_color" value="{{ s.get('accent_color','#d9a521') }}" style="height:42px"></div>
+    </div>
+  </div>
+  <button class="btn btn-accent btn-lg">Save Appearance</button>
+</form>
+{% endblock %}

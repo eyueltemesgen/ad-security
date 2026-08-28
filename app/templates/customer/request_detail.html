@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Service Request {{ req.request_number }}{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:26px">
+  <div class="dash-layout">
+    <aside class="dash-side">
+      <div style="padding:16px;border-bottom:1px solid var(--border)"><strong>{{ current_user.full_name }}</strong></div>
+      <a href="{{ url_for('customer.dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('customer.orders') }}">My Orders</a>
+      <a href="{{ url_for('customer.service_requests') }}" class="active">Service Requests</a>
+      <a href="{{ url_for('customer.profile') }}">Profile</a>
+      <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </aside>
+    <div class="dash-main">
+      <div class="flex-between">
+        <h2>{{ req.request_number }}</h2>
+        <span class="status-badge status-{{ req.status }}">{{ req.status_label }}</span>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-value" style="font-size:1rem">{{ req.submitted_at.strftime('%b %d, %Y') }}</div><div class="stat-label">Submitted</div></div>
+        <div class="stat"><div class="stat-value" style="font-size:1rem">{{ req.service_name }}</div><div class="stat-label">Service</div></div>
+        <div class="stat"><div class="stat-value" style="font-size:1rem">{{ req.location }}</div><div class="stat-label">Location</div></div>
+      </div>
+      <div class="panel">
+        <h3>Request Details</h3>
+        <dl style="margin:0">
+          {% if req.property_type %}<dt>Property Type</dt><dd>{{ req.property_type }}</dd>{% endif %}
+          {% if req.preferred_date %}<dt>Preferred Date</dt><dd>{{ req.preferred_date }}</dd>{% endif %}
+          {% if req.preferred_time %}<dt>Preferred Time</dt><dd>{{ req.preferred_time }}</dd>{% endif %}
+          {% if req.device_count %}<dt>Devices</dt><dd>{{ req.device_count }}</dd>{% endif %}
+          {% if req.current_system %}<dt>Current System</dt><dd>{{ req.current_system }}</dd>{% endif %}
+          {% if req.description %}<dt>Description</dt><dd>{{ req.description }}</dd>{% endif %}
+          {% if req.notes %}<dt>Notes</dt><dd>{{ req.notes }}</dd>{% endif %}
+        </dl>
+      </div>
+      {% if req.files %}
+      <div class="panel"><h3>Attachments</h3>
+        <ul class="notif-list">
+          {% for f in req.files %}
+          <li>{% if f.is_image %}<img src="/static/img/uploads/service/{{ f.filename }}" alt="" style="max-height:120px;border-radius:6px;margin-right:8px">{% endif %}
+            {{ f.original_name }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      <div class="panel">
+        <h3>Status Updates</h3>
+        {% if req.status_history %}
+        <ul class="notif-list">
+          {% for h in req.status_history %}
+          <li><span class="status-badge status-{{ h.to_status }}">{{ h.to_status.replace('_',' ').title() }}</span>
+            <span class="text-muted" style="font-size:.8rem">{{ h.created_at.strftime('%b %d, %Y %H:%M') }}{% if h.note %} — {{ h.note }}{% endif %}</span></li>
+          {% endfor %}
+        </ul>
+        {% else %}<p class="text-muted">Status updates will appear here.</p>{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

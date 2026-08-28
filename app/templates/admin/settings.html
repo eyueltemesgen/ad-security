@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% block title %}Settings{% endblock %}
+{% block heading %}Site Settings{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+  <input type="hidden" name="settings_group" value="general">
+  <div class="grid grid-2">
+    <div class="panel">
+      <h3>General</h3>
+      <div class="form-group"><label>Company Name</label><input type="text" name="company_name" value="{{ s.get('company_name','') }}"></div>
+      <div class="form-group"><label>Slogan / Tagline</label><input type="text" name="company_slogan" value="{{ s.get('company_slogan','') }}"></div>
+      <div class="form-group"><label>Description</label><textarea name="company_description">{{ s.get('company_description','') }}</textarea></div>
+      <div class="form-group"><label>Site Title</label><input type="text" name="site_title" value="{{ s.get('site_title','') }}"></div>
+      <div class="form-group"><label>Contact Email</label><input type="email" name="contact_email" value="{{ s.get('contact_email','') }}"></div>
+      <div class="form-group"><label>Contact Phone</label><input type="text" name="contact_phone" value="{{ s.get('contact_phone','') }}"></div>
+      <div class="form-group"><label>Address</label><input type="text" name="contact_address" value="{{ s.get('contact_address','') }}"></div>
+      <div class="form-group"><label>Working Hours</label><input type="text" name="working_hours" value="{{ s.get('working_hours','') }}"></div>
+    </div>
+    <div>
+      <div class="panel">
+        <h3>Branding</h3>
+        <div class="form-group"><label>Logo URL</label><input type="text" name="logo" value="{{ s.get('logo','/static/img/logo.png') }}"></div>
+        <div class="form-group"><label>Favicon URL</label><input type="text" name="favicon" value="{{ s.get('favicon','/static/img/favicon.png') }}"></div>
+        <div class="form-group"><label>Footer Copyright</label><input type="text" name="footer_copyright" value="{{ s.get('footer_copyright','') }}"></div>
+      </div>
+      <div class="panel">
+        <h3>Theme Colors</h3>
+        <div class="form-group"><label>Primary Color</label><input type="color" name="primary_color" value="{{ s.get('primary_color','#0b1f3a') }}" style="height:42px"></div>
+        <div class="form-group"><label>Secondary Color</label><input type="color" name="secondary_color" value="{{ s.get('secondary_color','#0e7a5a') }}" style="height:42px"></div>
+        <div class="form-group"><label>Accent Color</label><input type="color" name="accent_color" value="{{ s.get('accent_color','#d9a521') }}" style="height:42px"></div>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-accent btn-lg">Save Settings</button>
+</form>
+{% endblock %}

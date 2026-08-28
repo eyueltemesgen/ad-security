@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:26px">
+  <div class="dash-layout">
+    <aside class="dash-side">
+      <div style="padding:16px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center">
+        <img src="{{ current_user.profile_image or url_for('static', filename='img/avatar.png') }}" class="avatar avatar-md" alt="">
+        <div>
+          <strong>{{ current_user.full_name }}</strong><br>
+          <span class="text-muted" style="font-size:.8rem">{{ current_user.email }}</span>
+        </div>
+      </div>
+      <a href="{{ url_for('customer.dashboard') }}" class="active">Dashboard</a>
+      <a href="{{ url_for('customer.orders') }}">My Orders</a>
+      <a href="{{ url_for('customer.service_requests') }}">Service Requests</a>
+      <a href="{{ url_for('customer.request_service') }}">Request a Service</a>
+      <a href="{{ url_for('customer.cart') }}">My Cart</a>
+      <a href="{{ url_for('customer.profile') }}">Profile</a>
+      <a href="{{ url_for('customer.notifications') }}">Notifications</a>
+      <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </aside>
+    <div class="dash-main">
+      <h2 style="margin-bottom:18px">Welcome back, {{ current_user.full_name.split(' ')[0] }}</h2>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-value">{{ stats.total_orders }}</div><div class="stat-label">Total Orders</div></div>
+        <div class="stat"><div class="stat-value">{{ stats.active_orders }}</div><div class="stat-label">Active Orders</div></div>
+        <div class="stat"><div class="stat-value">{{ stats.completed_orders }}</div><div class="stat-label">Completed</div></div>
+        <div class="stat"><div class="stat-value">{{ stats.active_requests }}</div><div class="stat-label">Active Requests</div></div>
+        <div class="stat"><div class="stat-value">{{ stats.unread_notifications }}</div><div class="stat-label">Unread Alerts</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="flex-between"><h3>Recent Orders</h3><a href="{{ url_for('customer.orders') }}">View all</a></div>
+        {% if orders %}
+        <div class="table-wrap"><table class="data">
+          <thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            {% for o in orders[:5] %}
+            <tr>
+              <td data-label="Order">{{ o.order_number }}</td>
+              <td data-label="Date">{{ o.placed_at.strftime('%b %d, %Y') }}</td>
+              <td data-label="Total">${{ '%.2f'|format(o.total) }}</td>
+              <td data-label="Status"><span class="status-badge status-{{ o.status }}">{{ o.status_label }}</span></td>
+              <td data-label=""><a href="{{ url_for('customer.order_detail', order_id=o.id) }}">View →</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table></div>
+        {% else %}<p class="text-muted">You have no orders yet. <a href="{{ url_for('main.products') }}">Browse products</a></p>{% endif %}
+      </div>
+
+      <div class="panel">
+        <div class="flex-between"><h3>Recent Service Requests</h3><a href="{{ url_for('customer.service_requests') }}">View all</a></div>
+        {% if requests %}
+        <div class="table-wrap"><table class="data">
+          <thead><tr><th>Request</th><th>Service</th><th>Date</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            {% for r in requests[:5] %}
+            <tr>
+              <td data-label="Request">{{ r.request_number }}</td>
+              <td data-label="Service">{{ r.service_name }}</td>
+              <td data-label="Date">{{ r.submitted_at.strftime('%b %d, %Y') }}</td>
+              <td data-label="Status"><span class="status-badge status-{{ r.status }}">{{ r.status_label }}</span></td>
+              <td data-label=""><a href="{{ url_for('customer.request_detail', request_id=r.id) }}">View →</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table></div>
+        {% else %}<p class="text-muted">No service requests yet. <a href="{{ url_for('customer.request_service') }}">Request one</a></p>{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% block title %}Messages{% endblock %}
+{% block heading %}Contact Messages{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>From</th><th>Subject</th><th>Date</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for m in messages %}
+      <tr style="{{ 'font-weight:600' if not m.is_read }}">
+        <td data-label="From">{{ m.name }}<br><span class="text-muted" style="font-weight:400">{{ m.email }}</span></td>
+        <td data-label="Subject">{{ m.subject }}</td>
+        <td data-label="Date">{{ m.created_at.strftime('%b %d, %Y %H:%M') }}</td>
+        <td data-label="Status">
+          {% if m.is_replied %}<span class="status-badge status-completed">Replied</span>
+          {% elif m.is_read %}<span class="status-badge status-processing">Read</span>
+          {% else %}<span class="status-badge status-pending">New</span>{% endif %}
+        </td>
+        <td data-label=""><a href="{{ url_for('admin.message_detail', message_id=m.id) }}">View →</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  {% if not messages %}<div class="empty"><p>No messages yet.</p></div>{% endif %}
+</div>
+{% endblock %}

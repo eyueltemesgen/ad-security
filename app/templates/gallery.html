@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Gallery - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="page-title-band">
+  <div class="container"><h1>Gallery</h1><p>Some of our recent installation projects.</p></div>
+</div>
+<div class="container" style="padding-top:28px">
+  <div class="tabs-filter">
+    <span class="filter-chip active" data-filter="all">All</span>
+    {% for c in categories %}<span class="filter-chip" data-filter="{{ c }}">{{ c }}</span>{% endfor %}
+  </div>
+  <div class="grid grid-3">
+    {% for g in items %}
+    <div class="card" data-gallery-cat="{{ g.category }}">
+      <img class="card-img" src="{{ g.image_url }}" alt="{{ g.title }}">
+      <div class="card-body">
+        <div class="category-tag">{{ g.category }}</div>
+        <h4>{{ g.title }}</h4>
+        {% if g.description %}<p class="card-text">{{ g.description }}</p>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

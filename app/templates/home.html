@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% block title %}{{ site.seo_title }}{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="hero">
+  {% if hero.background_image %}<div class="hero-bg" style="background-image:url('{{ hero.background_image }}')"></div>{% endif %}
+  <div class="wrap">
+    <div class="eyebrow">AD Security Camera Solution</div>
+    <h1>{{ hero.heading or 'Complete Security Solutions for Your Home & Business' }}</h1>
+    <p>{{ hero.subtitle or 'Professional security systems, installation and technology solutions.' }}</p>
+    <div class="hero-actions">
+      <a href="{{ hero.cta1_url or url_for('main.products') }}" class="btn btn-light">{{ hero.cta1_label or 'Explore Products' }}</a>
+      <a href="{{ hero.cta2_url or url_for('customer.request_service') }}" class="btn btn-accent">{{ hero.cta2_label or 'Request a Service' }}</a>
+    </div>
+  </div>
+</section>
+
+<!-- Trust -->
+{% if trust and trust.points %}
+<section class="section section-alt">
+  <div class="container">
+    <div class="grid grid-auto">
+      {% for p in trust.points %}
+      <div class="card card-body" style="text-align:center">
+        <div class="service-icon">{{ p.icon[:1]|upper }}</div>
+        <h4>{{ p.title }}</h4>
+        <p class="card-text">{{ p.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Services -->
+<section class="section" id="services">
+  <div class="container">
+    <div class="section-head section-center">
+      <div class="eyebrow">What We Do</div>
+      <h2>{{ hero.services_title or 'Our Services' }}</h2>
+      <p>{{ hero.services_subtitle or 'Professional security services for home and business.' }}</p>
+    </div>
+    <div class="grid grid-3">
+      {% for s in services %}
+      <div class="card">
+        <div class="card-body">
+          <div class="service-icon">{{ s.icon[:1]|upper }}</div>
+          <h3 class="card-title">{{ s.name }}</h3>
+          <p class="card-text">{{ s.short_description }}</p>
+          <a href="{{ url_for('main.service_detail', slug=s.slug) }}" class="btn btn-outline btn-sm">Learn More →</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+<section class="section section-alt" id="featured">
+  <div class="container">
+    <div class="section-head section-center">
+      <div class="eyebrow">Shop</div>
+      <h2>Featured Products</h2>
+      <p>Handpicked security equipment for your property.</p>
+    </div>
+    <div class="grid grid-4">
+      {% for p in featured_products %}
+      <div class="card">
+        <a href="{{ url_for('main.product_detail', slug=p.slug) }}">
+          <img class="card-img" src="{{ p.main_image }}" alt="{{ p.name }}" loading="lazy">
+        </a>
+        <div class="card-body">
+          <div class="category-tag">{{ p.category.name if p.category else '' }}</div>
+          <h4 class="card-title"><a href="{{ url_for('main.product_detail', slug=p.slug) }}">{{ p.name }}</a></h4>
+          <div class="flex-between" style="margin-bottom:10px">
+            <span class="price">
+              {% if p.has_sale %}<span class="old">${{ '%.2f'|format(p.price) }}</span>{% endif %}
+              ${{ '%.2f'|format(p.display_price) }}
+            </span>
+            <span class="stock-badge stock-{{ p.stock_status }}">
+              {% if p.stock_status == 'in' %}In Stock{% elif p.stock_status == 'low' %}Low Stock{% else %}Out of Stock{% endif %}
+            </span>
+          </div>
+          <div class="flex" style="gap:8px">
+            <form method="post" action="{{ url_for('customer.add_to_cart') }}" style="flex:1">
+              <input type="hidden" name="product_id" value="{{ p.id }}">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="btn btn-secondary btn-sm" style="width:100%" {% if not p.in_stock %}disabled{% endif %}>Add to Cart</button>
+            </form>
+            <a href="{{ url_for('main.product_detail', slug=p.slug) }}" class="btn btn-outline btn-sm">View</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center" style="margin-top:28px">
+      <a href="{{ url_for('main.products') }}" class="btn btn-secondary">Browse All Products</a>
+    </div>
+  </div>
+</section>
+
+<!-- Installation section -->
+{% if installation %}
+<section class="section" id="installation">
+  <div class="container">
+    <div class="grid grid-2" style="align-items:center">
+      <div>
+        {% if installation.image %}<img class="img-cover" src="{{ installation.image }}" alt="CCTV Installation">{% endif %}
+      </div>
+      <div>
+        <div class="eyebrow">Installation & Service</div>
+        <h2>{{ installation.heading or 'Professional CCTV Installation & Service' }}</h2>
+        <p>{{ installation.description }}</p>
+        <div class="feature-list">
+          {% for pt in installation.points %}
+            <li>{{ pt }}</li>
+          {% endfor %}
+        </div>
+        <div style="margin-top:20px">
+          <a href="{{ installation.cta_url or '/request-service' }}" class="btn btn-accent btn-lg">{{ installation.cta_label or 'Book Installation' }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Why choose us -->
+{% if why and why.benefits %}
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-head section-center">
+      <h2>{{ why.title or 'Why Choose Us' }}</h2>
+      <p>Why homes and businesses trust us with their security.</p>
+    </div>
+    <div class="grid grid-3">
+      {% for b in why.benefits %}
+      <div class="card">
+        <div class="card-body" style="text-align:center">
+          <div class="service-icon">{{ b.icon[:1]|upper }}</div>
+          <h4>{{ b.title }}</h4>
+          <p class="card-text">{{ b.text }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- How it works -->
+{% if process and process.steps %}
+<section class="section">
+  <div class="container">
+    <div class="section-head section-center">
+      <h2>{{ process.title or 'How It Works' }}</h2>
+    </div>
+    <div class="grid grid-auto">
+      {% for step in process.steps %}
+      <div class="card card-body text-center" style="border-left:4px solid var(--secondary)">
+        <div class="eyebrow">Step {{ loop.index }}</div>
+        <h4>{{ step.title }}</h4>
+        <p class="card-text">{{ step.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Testimonials -->
+<section class="section section-alt" id="testimonials">
+  <div class="container">
+    <div class="section-head section-center"><h2>What Our Customers Say</h2></div>
+    <div class="grid grid-3">
+      {% for t in testimonials %}
+      <div class="card">
+        <div class="card-body">
+          <div class="stars">{% for _ in range(t.rating) %}★{% endfor %}</div>
+          <p class="quote">“{{ t.content }}”</p>
+          <div class="testimonial-meta">
+            {% if t.profile_image %}<img src="{{ t.profile_image }}" alt="">{% endif %}
+            <div>
+              <strong>{{ t.customer_name }}</strong>
+              {% if t.company %}<div class="card-sub">{{ t.company }}</div>{% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Gallery preview -->
+{% if gallery %}
+<section class="section" id="gallery">
+  <div class="container">
+    <div class="section-head section-center">
+      <div class="eyebrow">Our Work</div>
+      <h2>Recent Projects</h2>
+      <p>Some of our recent installation work.</p>
+    </div>
+    <div class="grid grid-3">
+      {% for g in gallery %}
+      <a href="{{ url_for('main.gallery') }}" style="display:block">
+        <img class="card-img" src="{{ g.image_url }}" alt="{{ g.title }}" loading="lazy">
+      </a>
+      {% endfor %}
+    </div>
+    <div class="text-center" style="margin-top:24px">
+      <a href="{{ url_for('main.gallery') }}" class="btn btn-secondary">View Full Gallery</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- FAQ preview -->
+{% if faqs %}
+<section class="section section-alt" id="faq">
+  <div class="container" style="max-width:820px">
+    <div class="section-head section-center"><h2>Frequently Asked Questions</h2></div>
+    {% for f in faqs %}
+    <div class="faq-item">
+      <div class="faq-q">{{ f.question }} <span>+</span></div>
+      <div class="faq-a">{{ f.answer }}</div>
+    </div>
+    {% endfor %}
+    <div class="text-center" style="margin-top:16px">
+      <a href="{{ url_for('main.faq') }}" class="btn btn-outline">View All FAQs</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Final CTA -->
+{% if final_cta %}
+<section class="hero">
+  {% if final_cta.background_image %}<div class="hero-bg" style="background-image:url('{{ final_cta.background_image }}')"></div>{% endif %}
+  <div class="wrap" style="text-align:center">
+    <h1>{{ final_cta.heading or 'Protect What Matters Most' }}</h1>
+    <p>{{ final_cta.description }}</p>
+    <div class="hero-actions" style="justify-content:center">
+      <a href="{{ final_cta.cta1_url or url_for('customer.request_service') }}" class="btn btn-accent btn-lg">{{ final_cta.cta1_label or 'Request Service' }}</a>
+      <a href="{{ final_cta.cta2_url or url_for('main.products') }}" class="btn btn-light btn-lg">{{ final_cta.cta2_label or 'Shop Products' }}</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+{% block title %}Homepage Editor{% endblock %}
+{% block heading %}Homepage Editor{% endblock %}
+{% block content %}
+<div class="grid grid-2">
+  {% for section in sections|sort(attribute='sort_order') %}
+  <div class="panel">
+    <div class="flex-between" style="margin-bottom:8px">
+      <h3 style="margin:0">{{ section.section_key.replace('_',' ').title() }}</h3>
+      {% if section.is_visible %}<span class="status-badge status-completed">Visible</span>{% else %}<span class="status-badge status-cancelled">Hidden</span>{% endif %}
+    </div>
+    <p class="text-muted" style="margin:0 0 12px">{{ section.title or 'Untitled section' }}</p>
+    <form method="post">
+      <input type="hidden" name="key" value="{{ section.section_key }}">
+      <label class="checkbox-line" style="margin-bottom:10px">
+        <input type="checkbox" name="visible" {% if section.is_visible %}checked{% endif %}> Show this section on the homepage
+      </label>
+      <button class="btn btn-secondary btn-sm">Save</button>
+    </form>
+    <div style="margin-top:10px"><a href="{{ url_for('admin.homepage_edit', key=section.section_key) }}" class="btn btn-sm btn-outline">Edit Content →</a></div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

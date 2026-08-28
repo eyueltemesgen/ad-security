@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Register - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="text-center" style="margin-bottom:16px">
+      <h1 style="font-size:1.6rem">Create Account</h1>
+      <p class="text-muted">Order products and request services.</p>
+    </div>
+    <form method="post">
+      <div class="form-group"><label>Full Name *</label><input type="text" name="full_name" value="{{ name or '' }}" required></div>
+      <div class="form-group"><label>Email *</label><input type="email" name="email" value="{{ email or '' }}" required></div>
+      <div class="form-group"><label>Phone</label><input type="tel" name="phone" value="{{ phone or '' }}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Password *</label><input type="password" name="password" required></div>
+        <div class="form-group"><label>Confirm Password *</label><input type="password" name="confirm_password" required></div>
+      </div>
+      <button class="btn btn-secondary btn-lg" style="width:100%" type="submit">Create Account</button>
+    </form>
+    <p class="text-center text-muted" style="margin-top:16px">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+  </div>
+</div>
+{% endblock %}

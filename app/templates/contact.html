@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Contact Us - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="page-title-band">
+  <div class="container"><h1>Contact Us</h1><p>Send us a message and we'll get back to you shortly.</p></div>
+</div>
+<div class="container" style="padding-top:28px">
+  {% if sent %}<div class="alert alert-success">Thank you! Your message has been sent. We'll contact you soon.</div>{% endif %}
+  <div class="grid grid-2">
+    <div class="panel">
+      <h3>Send a message</h3>
+      {% if errors %}<div class="alert alert-error">{% for e in errors %}{{ e }}<br>{% endfor %}</div>{% endif %}
+      <form method="post">
+        <div class="form-row">
+          <div class="form-group"><label>Name *</label><input type="text" name="name" value="{{ request.form.get('name','') }}" required></div>
+          <div class="form-group"><label>Phone</label><input type="tel" name="phone" value="{{ request.form.get('phone','') }}"></div>
+        </div>
+        <div class="form-group"><label>Email *</label><input type="email" name="email" value="{{ request.form.get('email','') }}" required></div>
+        <div class="form-group"><label>Subject *</label><input type="text" name="subject" value="{{ request.form.get('subject','') }}" required></div>
+        <div class="form-group"><label>Message *</label><textarea name="message" required>{{ request.form.get('message','') }}</textarea></div>
+        <button class="btn btn-accent btn-lg" type="submit">Send Message</button>
+      </form>
+    </div>
+    <div>
+      <div class="panel">
+        <h3>Contact information</h3>
+        <ul style="list-style:none;padding:0;margin:0">
+          <li style="margin-bottom:12px"><strong>Email:</strong><br><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+          {% if site.phone %}<li style="margin-bottom:12px"><strong>Phone:</strong><br>{{ site.phone }}</li>{% endif %}
+          {% if site.address %}<li style="margin-bottom:12px"><strong>Address:</strong><br>{{ site.address }}</li>{% endif %}
+          {% if site.hours %}<li style="margin-bottom:12px"><strong>Working Hours:</strong><br>{{ site.hours }}</li>{% endif %}
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Follow us</h3>
+        <div class="flex gap-2" style="flex-wrap:wrap">
+          {% for s in social_links %}
+          <a class="btn btn-outline btn-sm" href="{{ s.url }}" target="_blank" rel="noopener">{{ s.platform }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      <a href="{{ url_for('customer.request_service') }}" class="btn btn-secondary btn-lg" style="width:100%">Request a Service Instead</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

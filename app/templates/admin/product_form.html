@@ -1,0 +1,62 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if product else 'Add' }} Product{% endblock %}
+{% block heading %}{{ 'Edit Product' if product else 'Add Product' }}{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+  <div class="panel">
+    <div class="form-row">
+      <div class="form-group"><label>Product Name *</label><input type="text" name="name" value="{{ product.name if product else '' }}" required></div>
+      <div class="form-group"><label>SKU *</label><input type="text" name="sku" value="{{ product.sku if product else '' }}" required></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Slug</label><input type="text" name="slug" value="{{ product.slug if product else '' }}"><div class="form-hint">Leave blank to auto-generate.</div></div>
+      <div class="form-group"><label>Category *</label>
+        <select name="category_id" required>
+          {% for c in cats %}<option value="{{ c.id }}" {% if product and product.category_id==c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+        </select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Brand</label><select name="brand_id"><option value="">None</option>
+        {% for b in brands %}<option value="{{ b.id }}" {% if product and product.brand_id==b.id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}
+      </select></div>
+      <div class="form-group"><label>Warranty</label><input type="text" name="warranty" value="{{ product.warranty if product else '' }}"></div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-group"><label>Price ($) *</label><input type="number" step="0.01" min="0" name="price" value="{{ '%.2f'|format(product.price) if product else '' }}" required></div>
+      <div class="form-group"><label>Sale Price ($)</label><input type="number" step="0.01" min="0" name="sale_price" value="{{ '%.2f'|format(product.sale_price) if product and product.sale_price else '' }}"></div>
+      <div class="form-group"><label>Stock Quantity</label><input type="number" min="0" name="stock_quantity" value="{{ product.stock_quantity if product else 0 }}"></div>
+    </div>
+    <div class="form-group"><label>Short Description</label><textarea name="short_description">{{ product.short_description if product else '' }}</textarea></div>
+    <div class="form-group"><label>Full Description</label><textarea name="description">{{ product.description if product else '' }}</textarea></div>
+    <div class="form-group"><label>Features (one per line)</label><textarea name="features">{{ product.features if product else '' }}</textarea></div>
+    <div class="form-group"><label>Specifications (key: value, one per line)</label><textarea name="specifications" placeholder="Resolution: 4MP&#10;Form factor: Bullet">{{ product.specifications if product else '' }}</textarea></div>
+    <div class="form-group">
+      <div class="checkbox-line" style="margin-bottom:8px"><input type="checkbox" name="is_featured" id="featured" {% if product and product.is_featured %}checked{% endif %}><label for="featured">Featured product</label></div>
+      <div class="checkbox-line"><input type="checkbox" name="is_published" id="published" {% if not product or product.is_published %}checked{% endif %}><label for="published">Published (visible to customers)</label></div>
+    </div>
+  </div>
+
+  {% if product and product.images %}
+  <div class="panel">
+    <h3>Product Images</h3>
+    <div class="flex gap-2" style="flex-wrap:wrap">
+      {% for im in product.images %}
+      <div style="position:relative">
+        <img src="{{ im.image_url }}" alt="" style="width:120px;height:90px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+        <button name="delete_image" value="{{ im.id }}" class="btn btn-sm" style="position:absolute;top:4px;right:4px;background:var(--danger);padding:2px 8px;font-size:.7rem" type="submit">✕</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="panel">
+    <h3>Add Image</h3>
+    <input type="file" name="image" accept="image/*">
+  </div>
+  <div class="flex gap-2">
+    <button class="btn btn-accent btn-lg" type="submit">{% if product %}Save Product{% else %}Create Product{% endif %}</button>
+    {% if product %}<a href="{{ url_for('admin.product_delete', product_id=product.id) }}" class="btn btn-outline" style="border-color:var(--danger);color:var(--danger)" onclick="return confirm('Delete this product?')">Delete</a>{% endif %}
+  </div>
+</form>
+{% endblock %}

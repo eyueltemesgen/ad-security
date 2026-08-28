@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="container" style="padding:50px 20px;max-width:760px">
+  <div class="panel text-center">
+    <div style="font-size:3rem">✅</div>
+    <h2>Thank You! Order Placed</h2>
+    <p class="text-muted">Your order has been received and is being processed.</p>
+    <div class="stat-row" style="margin:20px 0">
+      <div class="stat"><div class="stat-value" style="font-size:1rem">{{ order.order_number }}</div><div class="stat-label">Order Number</div></div>
+      <div class="stat"><div class="stat-value" style="font-size:1rem">${{ '%.2f'|format(order.total) }}</div><div class="stat-label">Total</div></div>
+    </div>
+    <h3 style="margin-top:18px">Items</h3>
+    {% for i in order.items %}
+    <div class="flex-between" style="padding:8px 0;border-bottom:1px solid var(--border)">
+      <div class="text-left">{{ i.product_name }} × {{ i.quantity }}</div>
+      <div>${{ '%.2f'|format(i.line_total) }}</div>
+    </div>
+    {% endfor %}
+    <div class="flex-between" style="margin-top:14px"><strong>Total</strong><strong>${{ '%.2f'|format(order.total) }}</strong></div>
+    <div style="margin-top:20px;display:flex;justify-content:center;gap:10px">
+      <a href="{{ url_for('customer.order_detail', order_id=order.id) }}" class="btn btn-secondary">View Order</a>
+      <a href="{{ url_for('main.products') }}" class="btn btn-outline">Continue Shopping</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

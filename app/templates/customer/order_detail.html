@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.order_number }} - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:26px">
+  <div class="dash-layout">
+    <aside class="dash-side">
+      <div style="padding:16px;border-bottom:1px solid var(--border)">
+        <strong>{{ current_user.full_name }}</strong>
+      </div>
+      <a href="{{ url_for('customer.dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('customer.orders') }}" class="active">My Orders</a>
+      <a href="{{ url_for('customer.service_requests') }}">Service Requests</a>
+      <a href="{{ url_for('customer.profile') }}">Profile</a>
+      <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </aside>
+    <div class="dash-main">
+      <div class="flex-between">
+        <h2>Order {{ order.order_number }}</h2>
+        <span class="status-badge status-{{ order.status }}">{{ order.status_label }}</span>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-value" style="font-size:1rem">{{ order.placed_at.strftime('%b %d, %Y') }}</div><div class="stat-label">Date</div></div>
+        <div class="stat"><div class="stat-value" style="font-size:1rem">{{ order.item_count }}</div><div class="stat-label">Items</div></div>
+        <div class="stat"><div class="stat-value" style="font-size:1rem">${{ '%.2f'|format(order.total) }}</div><div class="stat-label">Total</div></div>
+      </div>
+
+      <div class="panel">
+        <h3>Items</h3>
+        <div class="table-wrap"><table class="data">
+          <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Total</th></tr></thead>
+          <tbody>
+            {% for i in order.items %}
+            <tr>
+              <td data-label="Product"><div class="flex" style="gap:10px">
+                {% if i.product_image %}<img src="{{ i.product_image }}" alt="" style="width:48px;height:40px;object-fit:cover;border-radius:5px">{% endif %}
+                <div>{{ i.product_name }}<div class="text-muted" style="font-size:.78rem">{{ i.product_sku }}</div></div>
+              </div></td>
+              <td data-label="Price">${{ '%.2f'|format(i.unit_price) }}</td>
+              <td data-label="Qty">{{ i.quantity }}</td>
+              <td data-label="Total">${{ '%.2f'|format(i.line_total) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table></div>
+        <div style="margin-top:14px">
+          <div class="flex-between"><span>Subtotal</span><span>${{ '%.2f'|format(order.subtotal) }}</span></div>
+          <div class="flex-between"><span>Delivery</span><span>${{ '%.2f'|format(order.delivery_fee) }}</span></div>
+          <hr class="divider">
+          <div class="flex-between" style="font-size:1.2rem"><strong>Total</strong><strong>${{ '%.2f'|format(order.total) }}</strong></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Delivery Details</h3>
+        <p class="text-muted" style="margin:0">
+          {{ order.full_name }}<br>
+          {{ order.phone }} · {{ order.email }}<br>
+          {{ order.address_line }}, {{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}
+          {% if order.delivery_notes %}<br>Notes: {{ order.delivery_notes }}{% endif %}
+        </p>
+      </div>
+
+      <div class="panel">
+        <h3>Status History</h3>
+        {% if order.status_history %}
+        <ul class="notif-list">
+          {% for h in order.status_history %}
+          <li><span class="status-badge status-{{ h.to_status }}">{{ h.to_status.replace('_',' ').title() }}</span>
+            <span class="text-muted" style="font-size:.8rem">{{ h.created_at.strftime('%b %d, %Y %H:%M') }}{% if h.note %} — {{ h.note }}{% endif %}</span></li>
+          {% endfor %}
+        </ul>
+        {% else %}<p class="text-muted">Status history is being recorded.</p>{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if page else 'Add' }} Page{% endblock %}
+{% block heading %}{{ 'Edit Page' if page else 'Add Page' }}{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+  <div class="panel" style="max-width:900px">
+    <div class="form-row">
+      <div class="form-group"><label>Title *</label><input type="text" name="title" value="{{ page.title if page else '' }}" required></div>
+      <div class="form-group"><label>Slug</label><input type="text" name="slug" value="{{ page.slug if page else '' }}"><div class="form-hint">Leave blank to auto-generate.</div></div>
+    </div>
+    <div class="form-group"><label>Subtitle</label><input type="text" name="subtitle" value="{{ page.subtitle if page else '' }}"></div>
+    <div class="form-group"><label>Content (HTML allowed)</label><textarea name="content" style="min-height:260px">{{ page.content if page else '' }}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Menu Order</label><input type="number" name="menu_order" value="{{ page.menu_order if page else 0 }}"></div>
+      <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:6px"><label class="checkbox-line"><input type="checkbox" name="is_published" {% if not page or page.is_published %}checked{% endif %}> Published</label></div>
+    </div>
+    <div class="form-group"><label>Page Image</label><input type="file" name="image" accept="image/*"><input type="hidden" name="page_image_url" value="{{ page.image if page else '' }}"><div class="form-hint">Leave empty to keep current.</div></div>
+    <button class="btn btn-accent btn-lg">Save Page</button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% block title %}Social Media{% endblock %}
+{% block heading %}Social Media Links{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:760px">
+  <h3>Add Platform</h3>
+  <form method="post" action="{{ url_for('admin.social_add') }}">
+    <div class="form-row">
+      <div class="form-group"><label>Platform *</label><input type="text" name="platform" placeholder="Facebook" required></div>
+      <div class="form-group"><label>URL *</label><input type="url" name="url" placeholder="https://facebook.com/..." required></div>
+      <div class="form-group"><label>Order</label><input type="number" name="sort_order" value="0"></div>
+    </div>
+    <button class="btn btn-accent btn-sm">Add</button>
+  </form>
+</div>
+<div class="panel" style="max-width:760px">
+  <table class="data">
+    <thead><tr><th>Platform</th><th>URL</th><th></th></tr></thead>
+    <tbody>
+      {% for s in items %}
+      <tr>
+        <td data-label="Platform"><form method="post" action="{{ url_for('admin.social_edit', item_id=s.id) }}" class="flex gap-2">
+          <input type="text" name="platform" value="{{ s.platform }}">
+          <input type="url" name="url" value="{{ s.url }}" placeholder="URL" style="flex:1">
+          <button class="btn btn-sm btn-outline">Save</button></form></td>
+        <td data-label="URL">
+          <form method="post" action="{{ url_for('admin.social_delete', item_id=s.id) }}" data-confirm="Remove this link?">
+            <button class="btn btn-sm btn-outline" style="color:var(--danger);border-color:var(--danger)">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

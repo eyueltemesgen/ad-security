@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Notifications - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:26px;max-width:820px">
+  <div class="flex-between" style="margin-bottom:18px">
+    <h2>Notifications</h2>
+    <form method="post" action="{{ url_for('customer.mark_notifications_read') }}"><button class="btn btn-outline btn-sm">Mark all as read</button></form>
+  </div>
+  <div class="panel">
+    {% if notifications %}
+    <ul class="notif-list">
+      {% for n in notifications %}
+      <li class="{% if not n.is_read %}unread{% endif %}">
+        <div class="n-title">{{ n.title }}</div>
+        {% if n.message %}<div>{{ n.message }}</div>{% endif %}
+        <div class="n-meta">{{ n.created_at.strftime('%b %d, %Y %H:%M') }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<div class="empty"><div class="big">🔔</</div><p>You have no notifications.</p></div>{% endif %}
+  </div>
+</div>
+{% endblock %}

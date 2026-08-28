@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}About Us - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="page-title-band">
+  <div class="container"><h1>{{ page.title if page else 'About Us' }}</h1><p>{{ page.subtitle if page else site.description }}</p></div>
+</div>
+<div class="container" style="padding-top:28px;max-width:860px">
+  <div class="panel">
+    {% if page %}
+      {% if page.image %}<img class="img-cover" src="{{ page.image }}" alt="" style="margin-bottom:20px">{% endif %}
+      {{ page.content|safe }}
+    {% else %}
+      <h2>Who We Are</h2>
+      <p>{{ site.description }}</p>
+    {% endif %}
+  </div>
+  <div class="grid grid-3" style="margin:24px 0">
+    <div class="card"><div class="card-body"><h4>Our Mission</h4><p class="card-text">To protect what matters most by delivering professional security systems, quality equipment and dependable support.</p></div></div>
+    <div class="card"><div class="card-body"><h4>Our Vision</h4><p class="card-text">To be the most trusted security and technology partner for homes and businesses.</p></div></div>
+    <div class="card"><div class="card-body"><h4>Our Values</h4><p class="card-text">Professionalism, quality, reliability, security expertise and customer-focused service in everything we do.</p></div></div>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-value">1000+</div><div class="stat-label">Installations</div></div>
+    <div class="stat"><div class="stat-value">10+</div><div class="stat-label">Years Experience</div></div>
+    <div class="stat"><div class="stat-value">500+</div><div class="stat-label">Business Clients</div></div>
+    <div class="stat"><div class="stat-value">24/7</div><div class="stat-label">Support</div></div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin{% endblock %} · {{ site.name }}</title>
+  <link rel="icon" href="{{ site.favicon }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>:root{--primary:{{ primary_color }};--secondary:{{ secondary_color }};--accent:{{ accent_color }};}</style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="admin-body">
+<div class="admin-layout">
+  <aside class="admin-side admin-sidebar" id="adminSidebar">
+    <div class="brand">
+      <img class="brand-logo" src="{{ site.logo }}" alt="" style="background:#fff">
+      <div class="brand-name">{{ site.name }}
+        <small>Admin Dashboard</small>
+      </div>
+    </div>
+    <nav>
+      <div class="nav-group">Overview</div>
+      <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint=='admin.dashboard' }}">📊 Dashboard</a>
+      <a href="{{ url_for('admin.analytics') }}" class="{{ 'active' if request.endpoint=='admin.analytics' }}">📈 Analytics</a>
+
+      <div class="nav-group">Sales</div>
+      <a href="{{ url_for('admin.orders') }}" class="{{ 'active' if request.endpoint.endswith('order') }}">📦 Orders</a>
+      <a href="{{ url_for('admin.products') }}" class="{{ 'active' if request.endpoint in ['admin.products','admin.product_add','admin.product_edit'] }}">🛒 Products</a>
+      <a href="{{ url_for('admin.categories') }}" class="{{ 'active' if request.endpoint=='admin.categories' }}">🏷 Categories</a>
+
+      <div class="nav-group">Services</div>
+      <a href="{{ url_for('admin.service_requests') }}" class="{{ 'active' if request.endpoint.startswith('admin.service_request') }}">🔧 Service Requests</a>
+      <a href="{{ url_for('admin.services_list') }}" class="{{ 'active' if request.endpoint.startswith('admin.service') }}">🛠 Services</a>
+
+      <div class="nav-group">People</div>
+      <a href="{{ url_for('admin.customers') }}" class="{{ 'active' if request.endpoint.startswith('admin.customer') }}">👥 Customers</a>
+      <a href="{{ url_for('admin.messages') }}" class="{{ 'active' if request.endpoint.startswith('admin.message') }}">✉ Messages</a>
+
+      <div class="nav-group">Content</div>
+      <a href="{{ url_for('admin.gallery') }}" class="{{ 'active' if request.endpoint.startswith('admin.gallery') }}">🖼 Gallery</a>
+      <a href="{{ url_for('admin.testimonials') }}" class="{{ 'active' if request.endpoint.startswith('admin.testimonial') }}">⭐ Testimonials</a>
+      <a href="{{ url_for('admin.faqs') }}" class="{{ 'active' if request.endpoint.startswith('admin.faq') }}">❓ FAQs</a>
+      <a href="{{ url_for('admin.media') }}" class="{{ 'active' if request.endpoint.startswith('admin.media') }}">🗂 Media Library</a>
+
+      <div class="nav-group">Website</div>
+      <a href="{{ url_for('admin.homepage') }}" class="{{ 'active' if request.endpoint.startswith('admin.homepage') }}">🏠 Homepage</a>
+      <a href="{{ url_for('admin.pages') }}" class="{{ 'active' if request.endpoint.startswith('admin.page') }}">📄 Pages</a>
+      <a href="{{ url_for('admin.navigation') }}" class="{{ 'active' if request.endpoint.startswith('admin.navigation') }}">🧭 Navigation</a>
+      <a href="{{ url_for('admin.settings') }}" class="{{ 'active' if request.endpoint=='admin.settings' }}">⚙ Settings</a>
+      <a href="{{ url_for('admin.social') }}" class="{{ 'active' if request.endpoint.startswith('admin.social') }}">🔗 Social Media</a>
+      <a href="{{ url_for('admin.seo') }}" class="{{ 'active' if request.endpoint=='admin.seo' }}">🔍 SEO</a>
+      <a href="{{ url_for('admin.appearance') }}" class="{{ 'active' if request.endpoint=='admin.appearance' }}">🎨 Appearance</a>
+
+      <div class="nav-group">System</div>
+      <a href="{{ url_for('admin.audit_logs') }}" class="{{ 'active' if request.endpoint=='admin.audit_logs' }}">📜 Audit Logs</a>
+      <a href="{{ url_for('admin.logout') }}">🚪 Logout</a>
+    </nav>
+  </aside>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <button class="btn btn-outline admin-mobile-toggle" onclick="document.getElementById('adminSidebar').classList.toggle('open')">☰ Menu</button>
+      <h2>{% block heading %}{% endblock %}</h2>
+      <div class="spacer"></div>
+      <a href="{{ url_for('main.home') }}" target="_blank" class="btn btn-sm btn-outline">View Site</a>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

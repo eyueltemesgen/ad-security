@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}Audit Logs{% endblock %}
+{% block heading %}Audit Logs{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Time</th><th>Admin</th><th>Action</th><th>Target</th><th>Description</th><th>IP</th></tr></thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td data-label="Time">{{ log.created_at.strftime('%b %d, %Y %H:%M') }}</td>
+        <td data-label="Admin">{{ log.admin_name or 'system' }}</td>
+        <td data-label="Action">{{ log.action }}</td>
+        <td data-label="Target">{{ log.target_type or '—' }}{% if log.target_id %} #{{ log.target_id }}{% endif %}</td>
+        <td data-label="Description">{{ log.description or '' }}</td>
+        <td data-label="IP"><code>{{ log.ip_address or '' }}</code></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  {% if not logs %}<div class="empty"><p>No activity recorded.</p></div>{% endif %}
+</div>
+{% endblock %}

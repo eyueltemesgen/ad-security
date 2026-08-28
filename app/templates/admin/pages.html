@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block title %}Pages{% endblock %}
+{% block heading %}Pages{% endblock %}
+{% block content %}
+<div class="toolbar"></div>
+<div class="panel" style="max-width:720px">
+  <h3>Add Page</h3>
+  <form method="post" action="{{ url_for('admin.page_add_post') }}">
+    <div class="form-row">
+      <div class="form-group"><label>Title *</label><input type="text" name="title" required></div>
+      <div class="form-group"><label>Slug</label><input type="text" name="slug"><div class="form-hint">e.g. /about → about</div></div>
+    </div>
+    <button class="btn btn-accent btn-sm">Create Page</button>
+  </form>
+</div>
+<div class="panel">
+  <table class="data">
+    <thead><tr><th>Page</th><th>Slug</th><th>Menu Order</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for p in pages %}
+      <tr>
+        <td data-label="Page">{{ p.title }}</td>
+        <td data-label="Slug">{{ p.slug }}</td>
+        <td data-label="Menu Order">{{ p.menu_order }}</td>
+        <td data-label="Status">{% if p.is_published %}<span class="status-badge status-completed">Published</span>{% else %}<span class="status-badge status-cancelled">Draft</span>{% endif %}</td>
+        <td data-label=""><a href="{{ url_for('admin.page_edit', page_id=p.id) }}">Edit →</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

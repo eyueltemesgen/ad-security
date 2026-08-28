@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Profile - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:26px">
+  <div class="dash-layout">
+    <aside class="dash-side">
+      <div style="padding:16px;border-bottom:1px solid var(--border)"><strong>{{ current_user.full_name }}</strong></div>
+      <a href="{{ url_for('customer.dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('customer.orders') }}">My Orders</a>
+      <a href="{{ url_for('customer.service_requests') }}">Service Requests</a>
+      <a href="{{ url_for('customer.request_service') }}">Request a Service</a>
+      <a href="{{ url_for('customer.profile') }}" class="active">Profile</a>
+      <a href="{{ url_for('customer.notifications') }}">Notifications</a>
+      <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </aside>
+    <div class="dash-main">
+      <h2 style="margin-bottom:18px">My Profile</h2>
+      <div class="panel">
+        <div class="flex" style="align-items:center;gap:14px;margin-bottom:16px">
+          <img src="{{ current_user.profile_image or url_for('static', filename='img/avatar.png') }}" class="avatar" style="width:72px;height:72px" alt="">
+          <div><strong>{{ current_user.full_name }}</strong><br><span class="text-muted">{{ current_user.email }}</span></div>
+        </div>
+        <form method="post" enctype="multipart/form-data">
+          <input type="hidden" name="action" value="profile">
+          <div class="form-row">
+            <div class="form-group"><label>Full Name</label><input type="text" name="full_name" value="{{ current_user.full_name }}"></div>
+            <div class="form-group"><label>Phone</label><input type="tel" name="phone" value="{{ current_user.phone or '' }}"></div>
+          </div>
+          <div class="form-group"><label>Email</label><input type="email" name="email" value="{{ current_user.email }}"></div>
+          <div class="form-group"><label>Profile Picture</label><input type="file" name="profile_image" accept="image/*"></div>
+          <button class="btn btn-secondary" type="submit">Save Profile</button>
+        </form>
+      </div>
+      <div class="panel">
+        <h3>Change Password</h3>
+        <form method="post">
+          <input type="hidden" name="action" value="password">
+          <div class="form-group"><label>Current Password</label><input type="password" name="current_password"></div>
+          <div class="form-row">
+            <div class="form-group"><label>New Password</label><input type="password" name="new_password"></div>
+            <div class="form-group"><label>Confirm</label><input type="password" name="confirm_password"></div>
+          </div>
+          <button class="btn btn-outline" type="submit">Update Password</button>
+        </form>
+      </div>
+      <div class="panel">
+        <h3>My Addresses</h3>
+        {% if addresses %}
+        <ul class="notif-list">
+          {% for a in addresses %}
+          <li><strong>{{ a.label }}</strong> — {{ a.address_line }}, {{ a.city }}{% if a.state %}, {{ a.state }}{% endif %}</li>
+          {% endfor %}
+        </ul>
+        {% else %}<p class="text-muted">No saved addresses.</p>{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

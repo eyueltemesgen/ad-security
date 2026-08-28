@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block title %}Gallery{% endblock %}
+{% block heading %}Gallery{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:720px">
+  <h3>Add Gallery Image</h3>
+  <form method="post" action="{{ url_for('admin.gallery_add') }}" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group"><label>Title</label><input type="text" name="title"></div>
+      <div class="form-group"><label>Category</label><select name="category">
+        <option value="">Select...</option><option>CCTV Installation</option><option>Access Control</option><option>Networking</option><option>Time Attendance</option><option>Video Intercom</option><option>Security Projects</option>
+      </select></div>
+    </div>
+    <div class="form-group"><label>Description</label><textarea name="description"></textarea></div>
+    <div class="checkbox-line" style="margin-bottom:8px"><input type="checkbox" name="is_published" checked><label>Published</label></div>
+    <div class="checkbox-line" style="margin-bottom:12px"><input type="checkbox" name="is_featured"><label>Featured on home</label></div>
+    <div class="form-group"><label>Image *</label><input type="file" name="image" accept="image/*" required></div>
+    <button class="btn btn-accent btn-sm">Add</button>
+  </form>
+</div>
+<div class="grid grid-4">
+  {% for g in items %}
+  <div class="card">
+    <img class="card-img" src="{{ g.image_url }}" alt="{{ g.title }}">
+    <div class="card-body">
+      <div class="category-tag">{{ g.category }}</div>
+      <h4>{{ g.title }}</h4>
+      {% if g.description %}<p class="card-text">{{ g.description }}</p>{% endif %}
+      {% if not g.is_published %}<span class="status-badge status-cancelled">Hidden</span>{% endif %}
+      <form method="post" action="{{ url_for('admin.gallery_delete', item_id=g.id) }}" data-confirm="Delete this image?" style="margin-top:8px">
+        <button class="btn btn-sm btn-outline" style="color:var(--danger);border-color:var(--danger)">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

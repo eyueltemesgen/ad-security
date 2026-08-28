@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# App runtime
+app.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Uploads (generated media)
+app/static/img/uploads/
+
+# Environment / OS
+.env
+.env.local
+.DS_Store
+*.log

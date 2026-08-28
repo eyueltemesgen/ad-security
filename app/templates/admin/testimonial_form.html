@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if t else 'Add' }} Testimonial{% endblock %}
+{% block heading %}{{ 'Edit Testimonial' if t else 'Add Testimonial' }}{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:680px">
+  <form method="post" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group"><label>Customer Name *</label><input type="text" name="customer_name" value="{{ t.customer_name if t else '' }}" required></div>
+      <div class="form-group"><label>Company</label><input type="text" name="company" value="{{ t.company if t else '' }}"></div>
+    </div>
+    <div class="form-group"><label>Rating (1-5)</label>
+      <select name="rating">{% for r in [1,2,3,4,5] %}<option value="{{ r }}" {% if t and t.rating==r %}selected{% endif %}>{{ r }} star{% if r!=1 %}s{% endif %}</option>{% endfor %}</select></div>
+    <div class="form-group"><label>Testimonial *</label><textarea name="content" required>{{ t.content if t else '' }}</textarea></div>
+    {% if t and t.profile_image %}<div style="margin-bottom:10px"><img src="{{ t.profile_image }}" class="avatar avatar-md" alt=""></div>{% endif %}
+    <div class="form-group"><label>Profile Image</label><input type="file" name="profile_image" accept="image/*"></div>
+    <div class="checkbox-line" style="margin-bottom:16px"><input type="checkbox" name="is_published" {% if not t or t.is_published %}checked{% endif %}><label>Published</label></div>
+    <button class="btn btn-accent btn-lg">{% if t %}Save{% else %}Add{% endif %}</button>
+  </form>
+</div>
+{% endblock %}

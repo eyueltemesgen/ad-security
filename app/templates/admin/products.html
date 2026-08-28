@@ -1,0 +1,45 @@
+{% extends "admin/base.html" %}
+{% block title %}Products{% endblock %}
+{% block heading %}Products{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <form method="get" class="flex gap-2">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search name, SKU...">
+    <button class="btn btn-secondary btn-sm">Search</button>
+  </form>
+  <div class="spacer"></div>
+  <a href="{{ url_for('admin.product_add') }}" class="btn btn-accent btn-sm">+ Add Product</a>
+</div>
+<div class="panel">
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Product</th><th>SKU</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td data-label="Product"><div class="flex" style="gap:8px">
+          {% if p.main_image %}<img src="{{ p.main_image }}" alt="" style="width:44px;height:38px;object-fit:cover;border-radius:4px">{% endif %}
+          <div>{{ p.name }}<div class="text-muted" style="font-size:.78rem">{{ p.brand.name if p.brand else '' }}</div></div></div></td>
+        <td data-label="SKU">{{ p.sku }}</td>
+        <td data-label="Category">{{ p.category.name if p.category else '—' }}</td>
+        <td data-label="Price">${{ '%.2f'|format(p.display_price) }}</td>
+        <td data-label="Stock"><span class="stock-badge stock-{{ p.stock_status }}">{{ p.stock_quantity }}</span></td>
+        <td data-label="Status">
+          {% if not p.is_published %}<span class="status-badge status-cancelled">Draft</span>
+          {% elif p.is_featured %}<span class="status-badge status-completed">Featured</span>
+          {% else %}<span class="status-badge status-processing">Live</span>{% endif %}
+        </td>
+        <td data-label=""><a href="{{ url_for('admin.product_edit', product_id=p.id) }}">Edit →</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  {% if not products %}<div class="empty"><p>No products found.</p></div>{% endif %}
+</div>
+{% if pagination.pages > 1 %}
+<div class="pagination">
+  {% if pagination.has_prev %}<a href="{{ url_for('admin.products', page=pagination.prev_num, q=q) }}">‹ Prev</a>{% endif %}
+  {% for p in range(1, pagination.pages+1) %}{% if p==pagination.page %}<span class="current">{{ p }}</span>{% else %}<a href="{{ url_for('admin.products', page=p, q=q) }}">{{ p }}</a>{% endif %}{% endfor %}
+  {% if pagination.has_next %}<a href="{{ url_for('admin.products', page=pagination.next_num, q=q) }}">Next ›</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

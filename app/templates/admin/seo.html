@@ -1,0 +1,12 @@
+{% extends "admin/base.html" %}
+{% block title %}SEO{% endblock %}
+{% block heading %}SEO Settings{% endblock %}
+{% block content %}
+<form method="post">
+  <div class="panel" style="max-width:860px">
+    <div class="form-group"><label>SEO Title</label><input type="text" name="seo_title" value="{{ s.get('seo_title','') }}"></div>
+    <div class="form-group"><label>Meta Description</label><textarea name="seo_description">{{ s.get('seo_description','') }}</textarea></div>
+    <button class="btn btn-accent btn-lg">Save SEO</button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "admin/base.html" %}
+{% block title %}Customer: {{ user.full_name }}{% endblock %}
+{% block heading %}Customer Profile{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="flex" style="align-items:center;gap:16px;margin-bottom:14px">
+    <img src="{{ user.profile_image or url_for('static', filename='img/avatar.png') }}" class="avatar" style="width:70px;height:70px" alt="">
+    <div>
+      <h3 style="margin:0">{{ user.full_name }}</h3>
+      <div class="text-muted">{{ user.email }} · {{ user.phone or 'no phone' }}</div>
+      <div class="text-muted">Joined {{ user.created_at.strftime('%b %d, %Y') }}</div>
+      <div style="margin-top:6px">{% if user.is_active %}<span class="status-badge status-completed">Active</span>{% else %}<span class="status-badge status-cancelled">Inactive</span>{% endif %}</div>
+    </div>
+  </div>
+  <form method="post" action="{{ url_for('admin.customer_toggle', user_id=user.id) }}">
+    <button class="btn btn-sm btn-outline" data-confirm="Toggle account status?">
+      {% if user.is_active %}Deactivate Account{% else %}Activate Account{% endif %}
+    </button>
+  </form>
+</div>
+
+<div class="panel">
+  <h3>Orders</h3>
+  {% if orders %}
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for o in orders %}
+      <tr><td data-label="Order">{{ o.order_number }}</td><td data-label="Date">{{ o.placed_at.strftime('%b %d, %Y') }}</td>
+        <td data-label="Total">${{ '%.2f'|format(o.total) }}</td>
+        <td data-label="Status"><span class="status-badge status-{{ o.status }}">{{ o.status_label }}</span></td>
+        <td data-label=""><a href="{{ url_for('admin.order_detail', order_id=o.id) }}">View</a></td></tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<p class="text-muted">No orders.</p>{% endif %}
+</div>
+
+<div class="panel">
+  <h3>Service Requests</h3>
+  {% if requests %}
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Request</th><th>Service</th><th>Date</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for r in requests %}
+      <tr><td data-label="Request">{{ r.request_number }}</td><td data-label="Service">{{ r.service_name }}</td>
+        <td data-label="Date">{{ r.submitted_at.strftime('%b %d, %Y') }}</td>
+        <td data-label="Status"><span class="status-badge status-{{ r.status }}">{{ r.status_label }}</span></td>
+        <td data-label=""><a href="{{ url_for('admin.service_request_detail', request_id=r.id) }}">View</a></td></tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<p class="text-muted">No service requests.</p>{% endif %}
+</div>
+{% endblock %}

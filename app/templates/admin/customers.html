@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block title %}Customers{% endblock %}
+{% block heading %}Customers{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <form method="get" class="flex gap-2">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search name, email, phone...">
+    <button class="btn btn-secondary btn-sm">Search</button>
+  </form>
+</div>
+<div class="panel">
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Customer</th><th>Email</th><th>Phone</th><th>Joined</th><th>Status</th><th>Orders</th><th></th></tr></thead>
+    <tbody>
+      {% for c in customers %}
+      <tr>
+        <td data-label="Customer"><div class="flex" style="gap:8px">
+          <img src="{{ c.profile_image or url_for('static', filename='img/avatar.png') }}" class="avatar avatar-sm" alt="">{{ c.full_name }}</div></td>
+        <td data-label="Email">{{ c.email }}</td>
+        <td data-label="Phone">{{ c.phone or '—' }}</td>
+        <td data-label="Joined">{{ c.created_at.strftime('%b %d, %Y') }}</td>
+        <td data-label="Status">{% if c.is_active %}<span class="status-badge status-completed">Active</span>{% else %}<span class="status-badge status-cancelled">Inactive</span>{% endif %}</td>
+        <td data-label="Orders">{{ c.orders|length }}</td>
+        <td data-label=""><a href="{{ url_for('admin.customer_detail', user_id=c.id) }}">View →</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  {% if not customers %}<div class="empty"><p>No customers found.</p></div>{% endif %}
+</div>
+{% if pagination.pages > 1 %}
+<div class="pagination">
+  {% if pagination.has_prev %}<a href="{{ url_for('admin.customers', page=pagination.prev_num, q=q) }}">‹ Prev</a>{% endif %}
+  {% for p in range(1, pagination.pages+1) %}{% if p==pagination.page %}<span class="current">{{ p }}</span>{% else %}<a href="{{ url_for('admin.customers', page=p, q=q) }}">{{ p }}</a>{% endif %}{% endfor %}
+  {% if pagination.has_next %}<a href="{{ url_for('admin.customers', page=pagination.next_num, q=q) }}">Next ›</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

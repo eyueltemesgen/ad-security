@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% block title %}Product Categories{% endblock %}
+{% block heading %}Product Categories{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:720px">
+  <div class="flex-between"><h3>Add Category</h3></div>
+  <form method="post" action="{{ url_for('admin.category_add') }}" class="flex gap-2">
+    <input type="text" name="name" placeholder="Category name" required>
+    <button class="btn btn-secondary btn-sm">Add</button>
+  </form>
+  <table class="data" style="margin-top:16px">
+    <thead><tr><th>Name</th><th>Products</th><th></th></tr></thead>
+    <tbody>
+      {% for c in cats %}
+      <tr>
+        <td data-label="Name">
+          <form method="post" action="{{ url_for('admin.category_edit', cat_id=c.id) }}" class="flex gap-2">
+            <input type="text" name="name" value="{{ c.name }}" style="min-width:200px">
+            <button class="btn btn-sm btn-outline">Save</button>
+          </form>
+        </td>
+        <td data-label="Products">{{ c.products|length }}</td>
+        <td data-label=""><form method="post" action="{{ url_for('admin.category_delete', cat_id=c.id) }}" data-confirm="Delete this category?"><button class="btn btn-sm btn-outline" style="color:var(--danger);border-color:var(--danger)">Delete</button></form></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

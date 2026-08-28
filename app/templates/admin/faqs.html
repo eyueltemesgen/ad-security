@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% block title %}FAQs{% endblock %}
+{% block heading %}FAQs{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:720px">
+  <h3>Add FAQ</h3>
+  <form method="post" action="{{ url_for('admin.faq_add') }}">
+    <div class="form-group"><label>Question</label><input type="text" name="question" required></div>
+    <div class="form-group"><label>Answer</label><textarea name="answer" required></textarea></div>
+    <div class="form-group"><label>Category (optional)</label><input type="text" name="category"></div>
+    <button class="btn btn-accent btn-sm">Add</button>
+  </form>
+</div>
+<div class="panel">
+  <table class="data">
+    <thead><tr><th>Question</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for f in items %}
+      <tr>
+        <td data-label="Question">
+          <form method="post" action="{{ url_for('admin.faq_edit', item_id=f.id) }}">
+            <div class="form-group"><input type="text" name="question" value="{{ f.question }}" style="margin:0"></div>
+            <div class="form-group"><textarea name="answer" style="min-height:50px;margin:0">{{ f.answer }}</textarea></div>
+            <div class="form-group"><input type="text" name="category" value="{{ f.category or '' }}" placeholder="Category"></div>
+            <label class="checkbox-line"><input type="checkbox" name="is_published" {% if f.is_published %}checked{% endif %}> Published</label>
+            <button class="btn btn-sm btn-outline" style="margin-top:6px">Save</button>
+          </form>
+        </td>
+        <td data-label="Status">{% if f.is_published %}<span class="status-badge status-completed">Live</span>{% else %}<span class="status-badge status-cancelled">Hidden</span>{% endif %}</td>
+        <td data-label=""><form method="post" action="{{ url_for('admin.faq_delete', item_id=f.id) }}" data-confirm="Delete this FAQ?"><button class="btn btn-sm btn-outline" style="color:var(--danger);border-color:var(--danger)">Delete</button></form></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

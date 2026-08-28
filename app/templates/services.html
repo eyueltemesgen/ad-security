@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Services - {{ site.name }}{% endblock %}
+{% block content %}
+<div class="page-title-band">
+  <div class="container"><h1>Our Services</h1><p>Professional security and technology services for home and business.</p></div>
+</div>
+<div class="container" style="padding-top:28px">
+  {% for cat in cats %}
+    <div class="section-head" style="margin-top:10px">
+      <h2>{{ cat.name }}</h2>
+      {% if cat.description %}<p>{{ cat.description }}</p>{% endif %}
+    </div>
+    <div class="grid grid-3" style="margin-bottom:26px">
+      {% for s in cat.services if s.is_published %}
+      <div class="card">
+        <div class="card-body">
+          <div class="service-icon">{{ s.icon[:1]|upper }}</div>
+          <h3 class="card-title">{{ s.name }}</h3>
+          <p class="card-text">{{ s.short_description }}</p>
+          {% if s.price_from %}<div class="price">from ${{ '%.2f'|format(s.price_from) }}</div>{% endif %}
+          <div class="flex gap-2" style="margin-top:12px">
+            <a href="{{ url_for('main.service_detail', slug=s.slug) }}" class="btn btn-outline btn-sm">Details</a>
+            <a href="{{ url_for('customer.request_service') }}" class="btn btn-secondary btn-sm">Request</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
