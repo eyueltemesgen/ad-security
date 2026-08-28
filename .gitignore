@@ -20,3 +20,6 @@ app/static/img/uploads/
 .env.local
 .DS_Store
 *.log
+
+# Vercel local project link
+.vercel/
