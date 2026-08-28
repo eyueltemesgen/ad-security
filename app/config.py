@@ -13,16 +13,23 @@ class Config:
 
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-change-me-in-production")
 
-    # SQLite by default; override with DATABASE_URL for Postgres/MySQL.
+    # On serverless platforms (Vercel) the project directory is read-only and
+    # non-persistent. If no DATABASE_URL is set, use a writable temp location so
+    # a fresh SQLite DB can be bootstrapped (ephemeral, per-instance). For
+    # durable data in production, set DATABASE_URL to a managed Postgres.
+    _IS_SERVERLESS = os.environ.get("VERCEL", "") == "1"
+    _DATA_DIR = "/tmp" if _IS_SERVERLESS else BASE_DIR
+
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL",
-        "sqlite:///" + os.path.join(BASE_DIR, "app.db"),
+        "sqlite:///" + os.path.join(_DATA_DIR, "app.db"),
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
 
     # Uploads
-    UPLOAD_FOLDER = os.path.join(BASE_DIR, "app", "static", "img", "uploads")
+    UPLOAD_FOLDER = os.path.join(_DATA_DIR, "uploads") if _IS_SERVERLESS \
+        else os.path.join(BASE_DIR, "app", "static", "img", "uploads")
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
     ALLOWED_IMAGE_TYPES = {"png", "jpg", "jpeg", "gif", "webp", "svg"}
     ALLOWED_DOCUMENT_TYPES = {"pdf", "doc", "docx", "txt", "png", "jpg", "jpeg"}
