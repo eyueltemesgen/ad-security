@@ -49,6 +49,24 @@ p { margin: 0 0 1em; }
   background: var(--primary); color: #fff; font-family: inherit; font-weight: 600;
   font-size: 0.95rem; cursor: pointer; transition: all 0.18s ease; text-align: center;
 }
+
+/* Theme toggle + header text links */
+.theme-toggle {
+  background: rgba(255,255,255,0.12); border: none; border-radius: 20px;
+  color: #fff; width: 38px; height: 38px; display: inline-flex; align-items: center;
+  justify-content: center; cursor: pointer; font-size: 1.05rem; transition: background .18s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.25); }
+.nav-link-btn {
+  color: rgba(255,255,255,0.85); padding: 9px 12px; border-radius: 5px;
+  font-size: 0.92rem; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;
+  position: relative;
+}
+.nav-link-btn:hover { color: #fff; background: rgba(255,255,255,0.12); }
+.nav-link-btn .badge-count { position: static; margin-left: 2px; }
+
+/* Confirmation mark */
+.confirm-mark { font-size: 3rem; line-height: 1; color: var(--success); margin-bottom: 6px; }
 .btn:hover { background: var(--primary-2); color: #fff; transform: translateY(-1px); }
 .btn-secondary { background: var(--secondary); }
 .btn-secondary:hover { background: #0c6a4e; color: #fff; }
@@ -110,7 +128,7 @@ textarea { resize: vertical; min-height: 110px; }
 .icon-btn:hover { background: rgba(255,255,255,0.25); }
 .badge-count { position: absolute; top: -4px; right: -4px; background: var(--accent); color: #fff; border-radius: 10px;
   font-size: 0.68rem; min-width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; padding: 0 4px; }
-.menu-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+.menu-toggle { display: none; background: none; border: none; color: #fff; font-size: 0.95rem; font-weight: 600; cursor: pointer; padding: 8px 4px; }
 
 /* Announcement bar */
 .announcement { background: var(--accent); color: #fff; text-align: center; padding: 8px 14px; font-size: 0.9rem; }
@@ -301,6 +319,44 @@ table.data tr:hover td { background: #f8fafc; }
 /* Empty state */
 .empty { text-align: center; padding: 50px 20px; color: var(--muted, #5b6b7c); }
 .empty .big { font-size: 2rem; margin-bottom: 10px; }
+
+/* ---------- Dark mode ---------- */
+html.dark {
+  --bg: #0f1823;
+  --surface: #16212f;
+  --text: #e3e9f0;
+  --muted: #93a3b5;
+  --border: #26354a;
+  --primary: #0b1f3a;
+  --primary-2: #12294d;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+html.dark body { background: var(--bg); }
+html.dark .section-alt, html.dark .crumbs { background: var(--surface); }
+html.dark input[type=text], html.dark input[type=email], html.dark input[type=password],
+html.dark input[type=tel], html.dark input[type=number], html.dark input[type=date],
+html.dark input[type=datetime-local], html.dark input[type=file], html.dark select,
+html.dark textarea { background: var(--surface); color: var(--text); border-color: var(--border); }
+html.dark .card-img { background: var(--bg); }
+html.dark table.data tr:hover td { background: rgba(255,255,255,0.04); }
+html.dark .dash-side a:hover { background: rgba(255,255,255,0.05); }
+html.dark .dash-side a.active { background: rgba(14,122,90,0.15); }
+html.dark .admin-body { background: var(--bg); }
+html.dark .notif-list li.unread { background: rgba(14,122,90,0.12); }
+html.dark .alert-success { background: rgba(29,158,107,0.15); border-color: rgba(29,158,107,0.35); }
+html.dark .alert-error, html.dark .alert-danger { background: rgba(212,61,61,0.15); border-color: rgba(212,61,61,0.35); }
+html.dark .alert-warning { background: rgba(217,165,33,0.15); border-color: rgba(217,165,33,0.35); }
+html.dark .alert-info { background: rgba(31,95,143,0.18); border-color: rgba(31,95,143,0.4); }
+html.dark .status-pending, html.dark .status-submitted { background: rgba(217,165,33,0.16); color: #e0b854; }
+html.dark .status-confirmed, html.dark .status-processing, html.dark .status-under_review,
+html.dark .status-scheduled, html.dark .status-in_progress { background: rgba(31,95,143,0.25); color: #7db8e8; }
+html.dark .status-ready, html.dark .status-completed { background: rgba(29,158,107,0.2); color: #4fc392; }
+html.dark .status-out_for_delivery, html.dark .status-contacted { background: rgba(106,63,181,0.25); color: #b49ae8; }
+html.dark .status-cancelled { background: rgba(212,61,61,0.2); color: #f08b8b; }
+html.dark .stock-in { background: rgba(29,158,107,0.2); color: #4fc392; }
+html.dark .stock-low { background: rgba(217,165,33,0.18); color: #e0b854; }
+html.dark .stock-out { background: rgba(212,61,61,0.2); color: #f08b8b; }
 
 /* Chart placeholders rendered with inline values */
 .bars { display: flex; align-items: flex-end; gap: 8px; height: 180px; padding-top: 10px; }

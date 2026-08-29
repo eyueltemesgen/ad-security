@@ -13,7 +13,7 @@
 <div class="grid grid-4">
   {% for m in items %}
   <div class="card">
-    {% if m.file_type in ['png','jpg','jpeg','gif','webp','svg'] %}<img class="card-img" src="{{ m.url }}" alt="">{% else %}<div class="card-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg)">📄</div>{% endif %}
+    {% if m.file_type in ['png','jpg','jpeg','gif','webp','svg'] %}<img class="card-img" src="{{ m.url }}" alt="">{% else %}<div class="card-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--muted);font-size:.85rem">{{ m.filename }}</div>{% endif %}
     <div class="card-body">
       <div class="text-muted" style="font-size:.78rem;word-break:break-all">{{ m.original_name or m.filename }}</div>
       <div class="text-muted" style="font-size:.75rem">{{ '%d KB'|format((m.file_size or 0)//1024) }} · {{ m.created_at.strftime('%b %d, %Y') }}</div>

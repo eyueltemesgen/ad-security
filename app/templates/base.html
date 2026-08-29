@@ -31,7 +31,7 @@
   <header class="site-header">
     <div class="container">
       <div class="header-bar">
-        <button class="menu-toggle" aria-label="Menu">☰</button>
+        <button class="menu-toggle" aria-label="Menu"><span>Menu</span></button>
         <a href="{{ url_for('main.home') }}" class="brand">
           <img class="brand-logo" src="{{ site.logo }}" alt="{{ site.name }}" onerror="this.style.visibility='hidden'">
           <span class="brand-name">{{ site.name.split()|first }}
@@ -48,13 +48,13 @@
             <input type="text" name="q" placeholder="Search products..." style="width:180px;background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.25);color:#fff" aria-label="Search">
           </form>
           {% if current_user.is_authenticated and current_user.role == 'customer' %}
-            <a href="{{ url_for('customer.cart') }}" class="icon-btn" title="Cart">🛒<span class="badge-count" data-cart-count>{{ cart_count or 0 }}</span></a>
-            <a href="{{ url_for('customer.notifications') }}" class="icon-btn" title="Notifications">🔔</a>
-            <a href="{{ url_for('customer.dashboard') }}" class="icon-btn" title="Account">👤</a>
+            <a href="{{ url_for('customer.cart') }}" class="nav-link-btn" title="Cart">Cart <span class="badge-count" data-cart-count>{{ cart_count or 0 }}</span></a>
+            <a href="{{ url_for('customer.notifications') }}" class="nav-link-btn" title="Notifications">Alerts</a>
+            <a href="{{ url_for('customer.dashboard') }}" class="nav-link-btn" title="Account">Account</a>
           {% else %}
             <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-sm">Login</a>
           {% endif %}
-          <a href="{{ url_for('admin.login', next=request.path) }}" class="btn btn-accent btn-sm" title="Staff login">Admin</a>
+          <button class="theme-toggle" id="themeToggle" type="button" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">🌙</button>
         </div>
       </div>
     </div>
@@ -75,6 +75,22 @@
 
   {% include "partials/footer.html" %}
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    (function () {
+      var key = "adsec-theme";
+      var saved = null;
+      try { saved = localStorage.getItem(key); } catch (e) {}
+      if (saved === "dark") document.documentElement.classList.add("dark");
+      var btn = document.getElementById("themeToggle");
+      if (btn) {
+        btn.addEventListener("click", function () {
+          var isDark = document.documentElement.classList.toggle("dark");
+          try { localStorage.setItem(key, isDark ? "dark" : "light"); } catch (e) {}
+          btn.textContent = isDark ? "☀️" : "🌙";
+        });
+      }
+    })();
+  </script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

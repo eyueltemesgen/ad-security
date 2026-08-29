@@ -56,7 +56,7 @@
   </div>
   <div class="flex gap-2">
     <button class="btn btn-accent btn-lg" type="submit">{% if product %}Save Product{% else %}Create Product{% endif %}</button>
-    {% if product %}<a href="{{ url_for('admin.product_delete', product_id=product.id) }}" class="btn btn-outline" style="border-color:var(--danger);color:var(--danger)" onclick="return confirm('Delete this product?')">Delete</a>{% endif %}
+    {% if product %}<form method="post" action="{{ url_for('admin.product_delete', product_id=product.id) }}" data-confirm="Delete this product?" style="display:inline"><button class="btn btn-outline" style="border-color:var(--danger);color:var(--danger)" type="submit">Delete</button></form>{% endif %}
   </div>
 </form>
 {% endblock %}

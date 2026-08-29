@@ -23,7 +23,7 @@
     {% if service and service.image %}<div style="margin-bottom:10px"><img src="{{ service.image }}" alt="" style="max-height:100px;border-radius:6px"></div>{% endif %}
     <div class="form-group"><label>Service Image</label><input type="file" name="image" accept="image/*"></div>
     <button class="btn btn-accent btn-lg" type="submit">{% if service %}Save Service{% else %}Create Service{% endif %}</button>
-    {% if service %}<a href="{{ url_for('admin.service_delete', service_id=service.id) }}" class="btn btn-outline" style="color:var(--danger);border-color:var(--danger)" onclick="return confirm('Delete this service?')">Delete</a>{% endif %}
+    {% if service %}<form method="post" action="{{ url_for('admin.service_delete', service_id=service.id) }}" data-confirm="Delete this service?" style="display:inline"><button class="btn btn-outline" style="color:var(--danger);border-color:var(--danger)" type="submit">Delete</button></form>{% endif %}
   </div>
 </form>
 {% endblock %}

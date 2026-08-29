@@ -13,9 +13,6 @@
       <a href="{{ hero.cta1_url or url_for('main.products') }}" class="btn btn-light">{{ hero.cta1_label or 'Explore Products' }}</a>
       <a href="{{ hero.cta2_url or url_for('customer.request_service') }}" class="btn btn-accent">{{ hero.cta2_label or 'Request a Service' }}</a>
     </div>
-    <div class="hero-admin-login" style="margin-top:14px">
-      <a href="{{ url_for('admin.login') }}" style="color:inherit;opacity:.85;font-size:.85rem;text-decoration:underline">Staff / Admin Login →</a>
-    </div>
   </div>
 </section>
 
